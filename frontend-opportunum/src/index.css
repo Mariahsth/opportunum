@@ -1,0 +1,15 @@
+:root {
+  /* cores principais */
+  --color-appbar-bg: #31353e;
+  --color-drawer-bg-desktop: #31353e;
+  --color-text-light: #ffffff;
+  --color-text-blue: #1976d2;
+  --color-text-gray: #515258d0;
+
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

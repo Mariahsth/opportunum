@@ -29,7 +29,7 @@ const theme = createTheme({
       paper: "#ffffff",   
     },
     text: {
-      primary: "#1a1a1a",
+      primary: "#3f3e3e",
     },
 
   },
@@ -41,11 +41,12 @@ const theme = createTheme({
           fontWeight: 800,
         },
         body: {
-          color: "var(--color-text-gray)",
           fontWeight: 500,
         }
       },
     },
+    
+    
   }
 });
 

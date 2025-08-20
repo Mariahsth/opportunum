@@ -1,9 +1,7 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import type { HeaderProps } from "../interface/HeaderProps";
 
-interface HeaderProps {
-    handleDrawerToggle: () => void;
-  }
 
 export default function Header({ handleDrawerToggle }:HeaderProps) {
   return (

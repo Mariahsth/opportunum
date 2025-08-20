@@ -9,12 +9,9 @@ import {
   Divider,
 } from "@mui/material";
 import React from "react";
+import type { SidebarProps } from "../interface/SidebarProps";
 
-interface SidebarProps {
-  mobileOpen: boolean;
-  handleDrawerToggle: () => void;
-  drawerWidth: number;
-}
+
 
 const paginasDisponiveis=['Instituto Estação 43', 'Instituto Estação 41', 'Instituto Estação 45']
 export default function Sidebar({

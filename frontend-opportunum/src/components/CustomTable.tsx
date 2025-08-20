@@ -19,6 +19,14 @@ import { useState } from "react";
 import { formatDate } from "../utils/formatDate";
 import type { RowData } from "../interface/RowData";
 
+const primeiraColuna = [
+  "Prazo",
+  "KR",
+  "Resultados Chave (Mensurável)",
+  "Responsáveis",
+  "Ações",
+];
+
 export default function CustomTable() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editRow, setEditRow] = useState<RowData | null>(null);
@@ -72,36 +80,19 @@ export default function CustomTable() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell
-                sx={{ color: "var(--color-text-blue)", fontWeight: 600 }}
-              >
-                Prazo
-              </TableCell>
-              <TableCell
-                sx={{ color: "var(--color-text-blue)", fontWeight: 600 }}
-              >
-                KR
-              </TableCell>
-              <TableCell
-                sx={{
-                  width: "50%",
-                  color: "var(--color-text-blue)",
-                  fontWeight: 600,
-                }}
-              >
-                Resultados Chave (O que alcançar - Mensurável)
-              </TableCell>
-              <TableCell
-                sx={{ color: "var(--color-text-blue)", fontWeight: 600 }}
-              >
-                Responsáveis
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "var(--color-text-blue)", fontWeight: 600 }}
-              >
-                Ações
-              </TableCell>
+              {primeiraColuna.map((titulo, index) => (
+                <TableCell
+                  align="center"
+                  key={index}
+                  sx={{
+                    color: "var(--color-text-blue)",
+                    fontWeight: 600,
+                    ...(index === 2 && { width: "50%" }),
+                  }}
+                >
+                  {titulo}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
 

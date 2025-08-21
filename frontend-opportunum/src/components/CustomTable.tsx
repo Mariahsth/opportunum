@@ -10,6 +10,10 @@ import {
   Paper,
   IconButton,
   Button,
+  Select,
+  MenuItem,
+  FormControl,
+  FormHelperText,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,12 +23,13 @@ import { useState } from "react";
 import { formatDate } from "../utils/formatDate";
 import type { RowData } from "../interface/RowData";
 
-const primeiraColuna = [
-  "Prazo",
-  "KR",
-  "Resultados Chave (Mensurável)",
-  "Responsáveis",
-  "Ações",
+const columns: { field: keyof RowData | "acoes"; label: string; width?: string }[] = [
+  { field: "prazo", label: "Prazo" },
+  { field: "kr", label: "KR" },
+  { field: "resultado", label: "Resultados Chave (Mensurável)", width: "50%" },
+  { field: "responsavel", label: "Responsáveis" },
+  { field: "andamento", label: "Andamento" },
+  { field: "acoes", label: "Ações" },
 ];
 
 export default function CustomTable() {
@@ -33,22 +38,17 @@ export default function CustomTable() {
   const [loading, setLoading] = useState(false);
 
   const [rows, setRows] = useState<RowData[]>([
-    {
-      prazo: "-",
-      kr: "",
-      resultado: "",
-      responsavel: "",
-    },
+    { prazo: "", kr: "", resultado: "", responsavel: "", andamento: "" },
   ]);
 
   const handleAddLine = () => {
-    const novaLinha = {
+    const novaLinha: RowData = {
       prazo: "",
       kr: "",
       resultado: "",
       responsavel: "",
+      andamento: "",
     };
-
     setRows((prevRows) => [...prevRows, novaLinha]);
   };
 
@@ -63,14 +63,17 @@ export default function CustomTable() {
   };
 
   const handleSave = (index: number) => {
-    setLoading(true)
-    if (!editRow) return;
+    if (!editRow || !editRow.andamento) {
+      return;
+    }
+
+    setLoading(true);
     const updatedRows = [...rows];
     updatedRows[index] = editRow;
     setRows(updatedRows);
     setEditIndex(null);
     setEditRow(null);
-    setLoading(false)
+    setLoading(false);
   };
 
   const handleChange = (field: keyof RowData, value: string) => {
@@ -83,17 +86,17 @@ export default function CustomTable() {
         <Table>
           <TableHead>
             <TableRow>
-              {primeiraColuna.map((titulo, index) => (
+              {columns.map((col) => (
                 <TableCell
+                  key={col.field}
                   align="center"
-                  key={index}
                   sx={{
                     color: "var(--color-text-blue)",
                     fontWeight: 600,
-                    ...(index === 2 && { width: "50%" }),
+                    ...(col.width && { width: col.width }),
                   }}
                 >
-                  {titulo}
+                  {col.label}
                 </TableCell>
               ))}
             </TableRow>
@@ -102,99 +105,135 @@ export default function CustomTable() {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={index} hover>
-                <TableCell>
-                  {editIndex === index ? (
-                    <TextField
-                      type="date"
-                      value={editRow?.prazo || ""}
-                      onChange={(e) => handleChange("prazo", e.target.value)}
-                      size="small"
-                    />
-                  ) : (
-                    formatDate(row.prazo)
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editIndex === index ? (
-                    <TextField
-                      value={editRow?.kr || ""}
-                      onChange={(e) => handleChange("kr", e.target.value)}
-                      size="small"
-                    />
-                  ) : (
-                    row.kr
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editIndex === index ? (
-                    <TextField
-                      fullWidth
-                      value={editRow?.resultado || ""}
-                      onChange={(e) =>
-                        handleChange("resultado", e.target.value)
-                      }
-                      size="small"
-                    />
-                  ) : (
-                    row.resultado
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editIndex === index ? (
-                    <TextField
-                      value={editRow?.responsavel || ""}
-                      onChange={(e) =>
-                        handleChange("responsavel", e.target.value)
-                      }
-                      size="small"
-                    />
-                  ) : (
-                    row.responsavel
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {editIndex === index ? (
-                    <>
-                      <IconButton
-                        size="small"
-                        color="success"
-                        loading={loading}
-                        onClick={() => handleSave(index)}
-                      >
-                        <SaveIcon fontSize="small"  />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={handleCancel}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleEdit(index)}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          setRows(rows.filter((_, i) => i !== index))
-                        }
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </>
-                  )}
-                </TableCell>
+                {columns.map((col) => {
+                  if (col.field === "acoes") {
+                    const isEditing = editIndex === index;
+                    const isAndamentoEmpty = isEditing && !editRow?.andamento;
+
+                    return (
+                      <TableCell key="acoes" align="center">
+                        {isEditing ? (
+                          <>
+                            <IconButton
+                              size="small"
+                              color="success"
+                              onClick={() => handleSave(index)}
+                              disabled={loading || !!isAndamentoEmpty}
+                            >
+                              <SaveIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={handleCancel}
+                            >
+                              <CloseIcon fontSize="small" />
+                            </IconButton>
+                          </>
+                        ) : (
+                          <>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEdit(index)}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                setRows(rows.filter((_, i) => i !== index))
+                              }
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </>
+                        )}
+                      </TableCell>
+                    );
+                  }
+
+                  const value = row[col.field as keyof RowData];
+                  const isEditing = editIndex === index;
+
+                  return (
+                    <TableCell key={col.field} align="center">
+                      {isEditing ? (
+                        col.field === "andamento" ? (
+                          <FormControl
+                            size="small"
+                            error={!editRow?.andamento}
+                            sx={{ minWidth: 160 }}
+                          >
+                            <Select
+                              size="small"
+                              value={editRow?.andamento || ""}
+                              onChange={(e) =>
+                                handleChange("andamento", e.target.value)
+                              }
+                              displayEmpty
+                              renderValue={(selected) =>
+                                selected ? (
+                                  selected
+                                ) : (
+                                  <em style={{ opacity: 0.7 }}>Selecione</em>
+                                )
+                              }
+                            >
+                              <MenuItem value="">
+                                <em>Selecione</em>
+                              </MenuItem>
+                              <MenuItem value="Não iniciado">Não iniciado</MenuItem>
+                              <MenuItem value="Em andamento">Em andamento</MenuItem>
+                              <MenuItem value="Finalizado">Finalizado</MenuItem>
+                            </Select>
+                            {!editRow?.andamento && (
+                              <FormHelperText>Obrigatório</FormHelperText>
+                            )}
+                          </FormControl>
+                        ) : col.field === "prazo" ? (
+                          <TextField
+                            type="date"
+                            size="small"
+                            value={editRow?.prazo || ""}
+                            onChange={(e) =>
+                              handleChange("prazo", e.target.value)
+                            }
+                          />
+                        ) : (
+                          <TextField
+                            fullWidth={col.field === "resultado"}
+                            size="small"
+                            value={editRow?.[col.field as keyof RowData] || ""}
+                            onChange={(e) =>
+                              handleChange(
+                                col.field as keyof RowData,
+                                e.target.value
+                              )
+                            }
+                          />
+                        )
+                      ) : col.field === "prazo" ? (
+                        formatDate(value)
+                      ) : col.field === "andamento" ? (
+                        value ? (
+                          value
+                        ) : (
+                          <Box component="span" sx={{ color: "error.main", fontStyle: "italic" }}>
+                            Não selecionado
+                          </Box>
+                        )
+                      ) : (
+                        value
+                      )}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
       <Box
         sx={{
           display: "flex",

@@ -19,7 +19,7 @@ import type { SidebarProps } from "../interface/SidebarProps";
 const paginasDisponiveis = [
   { name: "Instituto Estação 43", path: "/estacao43" },
   { name: "Instituto Estação 44", path: "/estacao44" },
-  { name: "Instituto Estação 45", path: "/planilha/45" },
+  { name: "Instituto Estação 45", path: "/estacao45" },
 ];
 
 // perfil atual (mock por enquanto) - depois passar isso via Context/Auth

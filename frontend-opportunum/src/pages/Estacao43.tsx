@@ -12,7 +12,7 @@ import CustomTable from "../components/CustomTable";
 
 export default function Estacao43() {
   return (
-    <Box sx={{p: 2,}}>
+    <Box >
       <Toolbar />
       <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
         Planejamento Estratégico Instituto Estação 43

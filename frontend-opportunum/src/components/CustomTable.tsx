@@ -22,6 +22,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatDate } from "../utils/formatDate";
 import type { RowData } from "../interface/RowData";
+import Dashboard from "./Dashboard";
 
 const columns: { field: keyof RowData | "acoes"; label: string; width?: string }[] = [
   { field: "prazo", label: "Prazo" },
@@ -246,6 +247,9 @@ export default function CustomTable() {
           Adicionar linha
         </Button>
       </Box>
+      {rows.some((row) => row.andamento) && (
+      <Dashboard andamentoData={rows.map((row) => row.andamento)} />
+    )}
     </>
   );
 }

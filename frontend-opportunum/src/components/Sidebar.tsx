@@ -19,6 +19,7 @@ export default function Sidebar({
   handleDrawerToggle,
   drawerWidth,
 }: SidebarProps) {
+  
   const drawerContent = (
     <div>
       <Toolbar />
@@ -31,7 +32,6 @@ export default function Sidebar({
               </ListItemButton>
             </ListItem>
 
-            {/* Adiciona o Divider, exceto no último item */}
             {index < array.length - 1 && (
               <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }} />
             )}

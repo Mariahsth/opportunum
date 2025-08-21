@@ -19,7 +19,7 @@ const labels = [
 
 export default function Form() {
     const [loading, setLoading] = useState(false);
-    const [salvo, setSalvo] = useState(false);
+    const [salvo, setSalvo] = useState(true);
 
     const handleSave = () => {
         setLoading(true)

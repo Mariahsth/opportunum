@@ -1,18 +1,37 @@
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import type { HeaderProps } from "../interface/HeaderProps";
+import { CircleUserRound } from "lucide-react";
+import { useState } from "react";
 
+export default function Header({ handleDrawerToggle }: HeaderProps) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-export default function Header({ handleDrawerToggle }:HeaderProps) {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    console.log("Deslogar usuário...");
+    handleClose();
+  };
+
   return (
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: 'var(--color-appbar-bg)',
+        backgroundColor: "var(--color-appbar-bg)",
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar>
+      <Toolbar
+        sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}
+      >
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -25,6 +44,22 @@ export default function Header({ handleDrawerToggle }:HeaderProps) {
         <Typography variant="h6" noWrap component="div">
           Acompanhamento de Planos OKR
         </Typography>
+        <Button
+          onClick={handleClick}
+          startIcon={
+            <CircleUserRound size={30} color="var(--color-text-light)" />
+          }
+          sx={{ padding: 0, minWidth: "auto" }}
+        />
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <MenuItem onClick={handleLogout}>Log out</MenuItem>
+        </Menu>
       </Toolbar>
     </AppBar>
   );

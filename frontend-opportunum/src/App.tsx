@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, CssBaseline} from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Estacao43 from "./pages/Estacao43";
@@ -23,7 +23,16 @@ export default function App() {
         drawerWidth={drawerWidth}
       />
 
-      <Estacao43/>
+      <Box
+        component="main"
+        sx={{
+          width: { xs: "100%", sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Estacao43
+
+        />
+      </Box>
     </Box>
   );
 }

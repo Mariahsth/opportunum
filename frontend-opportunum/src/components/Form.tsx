@@ -1,7 +1,11 @@
 import {
   TextField,
   Grid,
+  Button,
+  Box,
 } from "@mui/material";
+import { EditIcon, SaveIcon } from "lucide-react";
+import { useState } from "react";
 
 const labels = [
   "Perspectiva",
@@ -14,6 +18,21 @@ const labels = [
 ];
 
 export default function Form() {
+    const [loading, setLoading] = useState(false);
+    const [salvo, setSalvo] = useState(false);
+
+    const handleSave = () => {
+        setLoading(true)
+        console.log("Salvando")
+        setSalvo(true);
+        setLoading(false)
+
+    }
+    const handleEdit = () => {
+        setSalvo(false)
+        console.log("Editando")
+    }
+
   return (
     <>
       <Grid container spacing={2}>
@@ -22,6 +41,7 @@ export default function Form() {
             <TextField
               fullWidth
               label={label}
+              disabled={salvo}
               variant="outlined"
               type={label === "Prazo" ? "date" : "text"}
               slotProps={{
@@ -33,6 +53,30 @@ export default function Form() {
           </Grid>
         ))}
       </Grid>
+      <Box sx={{display:'flex', gap:2}}>
+        <Button
+            loading={loading}
+            loadingPosition="start"
+            startIcon={<SaveIcon />}
+            variant="contained"
+            color="success"
+            sx={{mt:2}}
+            onClick={() => handleSave()}
+            >
+            Salvar
+            </Button>
+        <Button
+            loading={loading}
+            loadingPosition="start"
+            startIcon={<EditIcon />}
+            variant="contained"
+            sx={{mt:2}}
+            onClick={() => handleEdit()}
+            >
+            Editar
+            </Button>
+
+      </Box>
     </>
   );
 }

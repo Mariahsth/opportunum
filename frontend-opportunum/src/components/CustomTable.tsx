@@ -30,6 +30,7 @@ const primeiraColuna = [
 export default function CustomTable() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editRow, setEditRow] = useState<RowData | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const [rows, setRows] = useState<RowData[]>([
     {
@@ -62,12 +63,14 @@ export default function CustomTable() {
   };
 
   const handleSave = (index: number) => {
+    setLoading(true)
     if (!editRow) return;
     const updatedRows = [...rows];
     updatedRows[index] = editRow;
     setRows(updatedRows);
     setEditIndex(null);
     setEditRow(null);
+    setLoading(false)
   };
 
   const handleChange = (field: keyof RowData, value: string) => {
@@ -155,9 +158,10 @@ export default function CustomTable() {
                       <IconButton
                         size="small"
                         color="success"
+                        loading={loading}
                         onClick={() => handleSave(index)}
                       >
-                        <SaveIcon fontSize="small" />
+                        <SaveIcon fontSize="small"  />
                       </IconButton>
                       <IconButton
                         size="small"

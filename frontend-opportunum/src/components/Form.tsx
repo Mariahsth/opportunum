@@ -8,11 +8,12 @@ import { EditIcon, SaveIcon } from "lucide-react";
 import { useState } from "react";
 
 const labels = [
-  "Perspectiva",
+  "Perspectiva/Eixo",
+  "Nº da Estratégia",
+  "Resultado chave",
+  "Objetivo",
   "Objetivo Estratégico",
   "Estratégia",
-  "Objetivo",
-  "Resultado chave",
   "Prazo",
   "Responsável",
 ];
@@ -37,13 +38,14 @@ export default function Form() {
     <>
       <Grid container spacing={2}>
         {labels.map((label, index) => (
-          <Grid key={label} size={{ xs: 12, sm: index === 0 ? 12 : 6 }}>
+          <Grid key={label} size={{ xs: 12, sm: index === 4 || index === 5 ? 12 : 6 }}>
             <TextField
               fullWidth
               label={label}
               disabled={salvo}
               variant="outlined"
               type={label === "Prazo" ? "date" : "text"}
+              multiline
               slotProps={{
                 inputLabel: {
                   shrink: true,

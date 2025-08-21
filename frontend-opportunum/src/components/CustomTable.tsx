@@ -157,7 +157,7 @@ export default function CustomTable() {
                   const isEditing = editIndex === index;
 
                   return (
-                    <TableCell key={col.field} align="center">
+                    <TableCell key={col.field} align="center" sx={{ verticalAlign: 'top' }}>
                       {isEditing ? (
                         col.field === "andamento" ? (
                           <FormControl
@@ -204,6 +204,8 @@ export default function CustomTable() {
                           <TextField
                             fullWidth={col.field === "resultado"}
                             size="small"
+                            multiline={col.field === "resultado"}
+                            maxRows={6}
                             value={editRow?.[col.field as keyof RowData] || ""}
                             onChange={(e) =>
                               handleChange(
@@ -211,6 +213,7 @@ export default function CustomTable() {
                                 e.target.value
                               )
                             }
+                            sx={{ resize: "none" }}
                           />
                         )
                       ) : col.field === "prazo" ? (
@@ -223,6 +226,17 @@ export default function CustomTable() {
                             Não selecionado
                           </Box>
                         )
+                      ) : col.field === "resultado" ? (
+                        <Box
+                          sx={{
+                            whiteSpace: "pre-wrap",
+                            textAlign: "left",
+                            maxWidth: "100%",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {value}
+                        </Box>
                       ) : (
                         value
                       )}
@@ -247,9 +261,10 @@ export default function CustomTable() {
           Adicionar linha
         </Button>
       </Box>
+
       {rows.some((row) => row.andamento) && (
-      <Dashboard andamentoData={rows.map((row) => row.andamento)} />
-    )}
+        <Dashboard andamentoData={rows.map((row) => row.andamento)} />
+      )}
     </>
   );
 }

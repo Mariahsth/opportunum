@@ -3,5 +3,5 @@ export interface RowData {
   kr: string;
   resultado: string;
   responsavel: string;
-  andamento: string;
+  andamento: "Não iniciado" | "Em andamento" | "Finalizado" | "";
 };

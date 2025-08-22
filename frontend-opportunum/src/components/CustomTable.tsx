@@ -22,9 +22,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatDate } from "../utils/formatDate";
 import type { RowData } from "../interface/RowData";
-import Dashboard from "./Dashboard";
+import DashboardProgress from "./DashboardProgress";
+import DashboardDeadline from "./DashboardDeadline";
 
-const columns: { field: keyof RowData | "acoes"; label: string; width?: string }[] = [
+const columns: {
+  field: keyof RowData | "acoes";
+  label: string;
+  width?: string;
+}[] = [
   { field: "prazo", label: "Prazo" },
   { field: "kr", label: "KR" },
   { field: "resultado", label: "Resultados Chave (Mensurável)", width: "50%" },
@@ -157,7 +162,11 @@ export default function CustomTable() {
                   const isEditing = editIndex === index;
 
                   return (
-                    <TableCell key={col.field} align="center" sx={{ verticalAlign: 'top' }}>
+                    <TableCell
+                      key={col.field}
+                      align="center"
+                      sx={{ verticalAlign: "top" }}
+                    >
                       {isEditing ? (
                         col.field === "andamento" ? (
                           <FormControl
@@ -183,8 +192,12 @@ export default function CustomTable() {
                               <MenuItem value="">
                                 <em>Selecione</em>
                               </MenuItem>
-                              <MenuItem value="Não iniciado">Não iniciado</MenuItem>
-                              <MenuItem value="Em andamento">Em andamento</MenuItem>
+                              <MenuItem value="Não iniciado">
+                                Não iniciado
+                              </MenuItem>
+                              <MenuItem value="Em andamento">
+                                Em andamento
+                              </MenuItem>
                               <MenuItem value="Finalizado">Finalizado</MenuItem>
                             </Select>
                             {!editRow?.andamento && (
@@ -222,7 +235,10 @@ export default function CustomTable() {
                         value ? (
                           value
                         ) : (
-                          <Box component="span" sx={{ color: "error.main", fontStyle: "italic" }}>
+                          <Box
+                            component="span"
+                            sx={{ color: "error.main", fontStyle: "italic" }}
+                          >
                             Não selecionado
                           </Box>
                         )
@@ -263,7 +279,28 @@ export default function CustomTable() {
       </Box>
 
       {rows.some((row) => row.andamento) && (
-        <Dashboard andamentoData={rows.map((row) => row.andamento)} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" }, 
+            width: "100%",
+            alignItems: "stretch", 
+          }}
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <DashboardProgress
+              andamentoData={rows.map((row) => row.andamento)}
+            />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <DashboardDeadline
+              atividades={rows.map((row) => ({
+                status: row.andamento as RowData["andamento"],
+                dueDate: row.prazo,
+              }))}
+            />
+          </Box>
+        </Box>
       )}
     </>
   );

@@ -25,8 +25,8 @@ import { useNavigate } from "react-router-dom";
 
 // páginas de exemplo -> depois buscar no banco de dados
 const paginasDisponiveis = [
-  { name: "Instituto Estação 43", path: "/estacao43" },
-  { name: "Instituto Estação 44", path: "/estacao44" },
+  { name: "Instituto Estação 43", path: "/planilha/estacao43" },
+  { name: "Instituto Estação 44", path: "/planilha/estacao44" },
 ];
 
 // perfil atual (mock por enquanto) - depois passar isso via Context/Auth

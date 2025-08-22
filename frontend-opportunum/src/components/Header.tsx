@@ -4,6 +4,10 @@ import type { HeaderProps } from "../interface/HeaderProps";
 import { CircleUserRound } from "lucide-react";
 import { useState } from "react";
 
+// perfil atual (mock por enquanto) - depois passar isso via Context/Auth
+const userRole: "master" | "admin" | "assistant" = "master";
+
+
 export default function Header({ handleDrawerToggle }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -59,6 +63,9 @@ export default function Header({ handleDrawerToggle }: HeaderProps) {
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
+          {userRole === "master" && (
+            <MenuItem >Gerenciar usuários</MenuItem>
+          )}
         </Menu>
       </Toolbar>
     </AppBar>

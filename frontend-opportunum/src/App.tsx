@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar";
 import Estacao43 from "./pages/Estacao43";
 import Estacao44 from "./pages/Estacao44";
 import PaginaGenerica from "./pages/PaginaGenerica";
+import Home from "./pages/Home";
 
 const drawerWidth = 240;
 
@@ -36,7 +37,7 @@ export default function App() {
           }}
         >
           <Routes>
-            <Route path="/" element={<Estacao43 />} />
+            <Route path="/" element={<Home />} />
             <Route path="/planilha/:nome" element={<PaginaGenerica />} />
             <Route path="/estacao43" element={<Estacao43 />} />
             <Route path="/estacao44" element={<Estacao44 />} />

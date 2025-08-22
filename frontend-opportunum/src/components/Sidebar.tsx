@@ -47,10 +47,26 @@ export default function Sidebar({
     <div>
       <Toolbar />
       <List>
-        <Typography sx={{ color: "#ffffff47", m: 1 }}>
+      
+        <ListItem disablePadding>
+          <ListItemButton
+            component={Link}
+            to={"/"}
+            selected={location.pathname === "/"}
+          >
+            <ListItemText >Início</ListItemText>
+          </ListItemButton>
+        </ListItem>
+        <Divider
+          sx={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)", mb:3
+          }}
+        />
+        <Typography sx={{ color: "#ffffff47", m: 1, ml:4 }}>
           Planilhas disponíveis:
         </Typography>
         <Divider
+        variant="middle"
           sx={{
             mb: 3,
             backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -86,36 +102,37 @@ export default function Sidebar({
                 <IconButton color="inherit" onClick={() => setOpen(true)}>
                   <AddCircleOutlineIcon fontSize="large" color="primary" />
                 </IconButton>
-               
               </Tooltip>
 
               {/* Modal que abre ao clicar no botão de add planilha */}
               <Dialog open={open} onClose={() => setOpen(false)}>
-                  <DialogTitle>Criar nova planilha</DialogTitle>
-                  <DialogContent>
-                    <TextField
-                      label="Nome"
-                      fullWidth
-                      value={newPage}
-                      sx={{mt:3}}
-                      onChange={(e) => setNewPage(e.target.value)}
-                    />
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancelar</Button>
-                    <Button
+                <DialogTitle>Criar nova planilha</DialogTitle>
+                <DialogContent>
+                  <TextField
+                    label="Nome"
+                    fullWidth
+                    value={newPage}
+                    sx={{ mt: 3 }}
+                    onChange={(e) => setNewPage(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setOpen(false)}>Cancelar</Button>
+                  <Button
                     onClick={() => {
-                      const path = `/planilha/${newPage.toLowerCase().replace(/\s+/g, "-")}`;
+                      const path = `/planilha/${newPage
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")}`;
                       setPaginas((prev) => [...prev, { name: newPage, path }]);
                       setOpen(false);
                       navigate(path);
                       setNewPage("");
                     }}
-                    >
-                      Salvar
-                    </Button>
-                  </DialogActions>
-                </Dialog>
+                  >
+                    Salvar
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </ListItem>
           </>
         )}

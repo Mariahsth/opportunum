@@ -9,17 +9,24 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { SidebarProps } from "../interface/SidebarProps";
+import { useNavigate } from "react-router-dom";
 
-// páginas de exemplo -> depois fazer dinamico
+// páginas de exemplo -> depois buscar no banco de dados
 const paginasDisponiveis = [
   { name: "Instituto Estação 43", path: "/estacao43" },
   { name: "Instituto Estação 44", path: "/estacao44" },
-  { name: "Instituto Estação 45", path: "/estacao45" },
 ];
 
 // perfil atual (mock por enquanto) - depois passar isso via Context/Auth
@@ -30,13 +37,27 @@ export default function Sidebar({
   handleDrawerToggle,
   drawerWidth,
 }: SidebarProps) {
+  const [open, setOpen] = useState(false);
+  const [newPage, setNewPage] = useState("");
+  const [paginas, setPaginas] = useState(paginasDisponiveis);
+  const navigate = useNavigate();
   const location = useLocation();
 
   const drawerContent = (
     <div>
       <Toolbar />
       <List>
-        {paginasDisponiveis.map((page, index, array) => (
+        <Typography sx={{ color: "#ffffff47", m: 1 }}>
+          Planilhas disponíveis:
+        </Typography>
+        <Divider
+          sx={{
+            mb: 3,
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            height: "3px",
+          }}
+        />
+        {paginas.map((page, index, array) => (
           <React.Fragment key={page.path}>
             <ListItem disablePadding>
               <ListItemButton
@@ -62,16 +83,39 @@ export default function Sidebar({
             />
             <ListItem disablePadding sx={{ justifyContent: "center" }}>
               <Tooltip title="Criar nova planilha">
-                <IconButton
-                  color="inherit"
-                  onClick={() => {
-                    // futuramente: abre modal ou redireciona para página de criação
-                    alert("Criar nova planilha");
-                  }}
-                >
+                <IconButton color="inherit" onClick={() => setOpen(true)}>
                   <AddCircleOutlineIcon fontSize="large" color="primary" />
                 </IconButton>
+               
               </Tooltip>
+
+              {/* Modal que abre ao clicar no botão de add planilha */}
+              <Dialog open={open} onClose={() => setOpen(false)}>
+                  <DialogTitle>Criar nova planilha</DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      label="Nome"
+                      fullWidth
+                      value={newPage}
+                      sx={{mt:3}}
+                      onChange={(e) => setNewPage(e.target.value)}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setOpen(false)}>Cancelar</Button>
+                    <Button
+                    onClick={() => {
+                      const path = `/planilha/${newPage.toLowerCase().replace(/\s+/g, "-")}`;
+                      setPaginas((prev) => [...prev, { name: newPage, path }]);
+                      setOpen(false);
+                      navigate(path);
+                      setNewPage("");
+                    }}
+                    >
+                      Salvar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
             </ListItem>
           </>
         )}

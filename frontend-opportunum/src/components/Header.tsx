@@ -76,7 +76,7 @@ export default function Header({ handleDrawerToggle }: HeaderProps) {
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
-          {isMaster || isAdmin && (
+          {(isMaster || isAdmin) && (
             <MenuItem onClick={handleTeams}>Gerenciar equipe</MenuItem>
           )}
         </Menu>

@@ -15,6 +15,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthProvider";
+import ManageTeams from "./pages/ManageTeams";
 
 const drawerWidth = 240;
 
@@ -59,6 +60,14 @@ function AppContent() {
             element={
               <PrivateRoute>
                 <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/teams"
+            element={
+              <PrivateRoute>
+                <ManageTeams />
               </PrivateRoute>
             }
           />

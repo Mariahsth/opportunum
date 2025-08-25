@@ -5,15 +5,20 @@ import { CircleUserRound } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-// perfil atual (mock por enquanto) - depois passar isso via Context/Auth
-const userRole: "master" | "admin" | "assistant" = "master";
+
 
 
 export default function Header({ handleDrawerToggle }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const isMaster = user?.roles.includes("master");
+  const isAdmin = user?.roles.includes("admin");
+
+  if (loading) {
+    return null; 
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -27,6 +32,10 @@ export default function Header({ handleDrawerToggle }: HeaderProps) {
     await logout();
     handleClose();
     navigate("/login");
+  };
+  const handleTeams = async () => {
+    handleClose();
+    navigate("/teams");
   };
 
   return (
@@ -67,8 +76,8 @@ export default function Header({ handleDrawerToggle }: HeaderProps) {
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
-          {userRole === "master" && (
-            <MenuItem >Gerenciar usuários</MenuItem>
+          {isMaster || isAdmin && (
+            <MenuItem onClick={handleTeams}>Gerenciar equipe</MenuItem>
           )}
         </Menu>
       </Toolbar>

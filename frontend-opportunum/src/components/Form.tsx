@@ -24,7 +24,6 @@ export default function Form() {
 
     const handleSave = () => {
         setLoading(true)
-        console.log("Salvando")
         setSalvo(true);
         setLoading(false)
 

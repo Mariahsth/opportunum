@@ -22,6 +22,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { SidebarProps } from "../interface/SidebarProps";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 // páginas de exemplo -> depois buscar no banco de dados
 const paginasDisponiveis = [
@@ -29,8 +30,7 @@ const paginasDisponiveis = [
   { name: "Instituto Estação 44", path: "/planilha/estacao44" },
 ];
 
-// perfil atual (mock por enquanto) - depois passar isso via Context/Auth
-const userRole: "master" | "admin" | "assistant" = "master";
+
 
 export default function Sidebar({
   mobileOpen,
@@ -42,6 +42,13 @@ export default function Sidebar({
   const [paginas, setPaginas] = useState(paginasDisponiveis);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { user, loading } = useAuth();
+  const isMaster = user?.roles.includes("master");
+
+  if (loading) {
+    return null; 
+  }
 
   const drawerContent = (
     <div>
@@ -92,7 +99,7 @@ export default function Sidebar({
         ))}
 
         {/* Botão de adicionar planilha (apenas Master vê) */}
-        {userRole === "master" && (
+        {isMaster && (
           <>
             <Divider
               sx={{ my: 1, backgroundColor: "rgba(255, 255, 255, 0.1)" }}

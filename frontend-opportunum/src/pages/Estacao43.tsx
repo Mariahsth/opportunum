@@ -11,10 +11,16 @@ import { useParams } from "react-router-dom";
 import Form from "../components/Form";
 import CustomTable from "../components/CustomTable";
 import { Trash2 } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Estacao43() {
   const { nome } = useParams();
+  const { user, loading } = useAuth();
+  const isMaster = user?.roles.includes("master");
 
+  if (loading) {
+    return null; 
+  }
   return (
     <Box>
       <Toolbar />
@@ -30,11 +36,13 @@ export default function Estacao43() {
           PLANEJAMENTO ESTRATÉGICO{" "}
           {nome?.replace(/-/g, " ").toLocaleUpperCase()}
         </Typography>
-        <Button
-          startIcon={<Trash2 />}
-          sx={{ padding: 0, minWidth: "auto", mb: 2 }}
-          onClick={() => alert('Excluindo planilha')}
-        />
+        {isMaster && (
+          <Button
+            startIcon={<Trash2 />}
+            sx={{ padding: 0, minWidth: "auto", mb: 2 }}
+            onClick={() => alert('Excluindo planilha')}
+          />
+        )}
       </Box>
       <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
 

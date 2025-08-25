@@ -36,12 +36,12 @@ export const login = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Credenciais inválidas' });
+      return res.status(400).json({ message: 'Email inválido' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Credenciais inválidas' });
+      return res.status(400).json({ message: 'Senha inválida' });
     }
 
     const token = jwt.sign(
@@ -55,9 +55,36 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: '1d' }
     );
 
-    res.status(200).json({ message: 'Login bem-sucedido', token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // só HTTPS em produção
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 dia
+    });
+
+    res.status(200).json({ message: "Login realizado com sucesso" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro no servidor' });
+  }
+};
+
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.token; 
+
+    if (!token) {
+      return res.status(401).json({ message: 'Não autenticado' });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    return res.status(401).json({ message: 'Token inválido ou expirado' });
   }
 };

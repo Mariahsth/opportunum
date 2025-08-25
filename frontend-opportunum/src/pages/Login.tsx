@@ -1,16 +1,24 @@
 import { Box, Button, TextField, Typography, Paper, Toolbar } from "@mui/material";
 import { useState } from "react";
+import { loginUser } from "../services/authService"; 
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Validar o login
-    console.log("Email:", email);
-    console.log("Senha:", senha);
-    // redirecionar ou mostrar erro
+    setError("");
+
+    try {
+      await loginUser(email, senha);
+      alert("Login realizado com sucesso!");
+      window.location.href = "/";
+
+    } catch (err) {
+      setError(typeof err === "string" ? err : "Erro inesperado");
+    }
   };
 
   return (
@@ -20,17 +28,22 @@ export default function Login() {
       alignItems="center"
       minHeight="100vh"
       bgcolor="var(--color-appbar-bg)"
-      sx={{display:'flex', flexDirection:'column'}}
+      sx={{ display: "flex", flexDirection: "column" }}
     >
       <Toolbar />
 
-      <Typography variant="h2" sx={{ textAlign: "center", mb:5  }}>
-      OKRs de Planejamento Estratégico
+      <Typography variant="h2" sx={{ textAlign: "center", mb: 5 }}>
+        OKRs de Planejamento Estratégico
       </Typography>
-      <Paper elevation={3} sx={{ padding: 4, width: "100%", maxWidth: 400, bgcolor:'var(--color-bg)'}}>
+
+      <Paper
+        elevation={3}
+        sx={{ padding: 4, width: "100%", maxWidth: 400, bgcolor: "var(--color-bg)" }}
+      >
         <Typography variant="h5" align="center" gutterBottom>
           Login
         </Typography>
+
         <Box component="form" onSubmit={handleLogin}>
           <TextField
             label="Email"
@@ -42,16 +55,15 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             required
             sx={{
-                "& label": {
-                    bgcolor:'var(--color-bg)', // cor do label
-                  },
-                  "& label.Mui-focused": {
-                    bgcolor:'var(--color-bg)', // label quando focado
-                  },
-
-                input: {
-                    bgcolor:'var(--color-bg)',
-                }
+              "& label": {
+                bgcolor: "var(--color-bg)",
+              },
+              "& label.Mui-focused": {
+                bgcolor: "var(--color-bg)",
+              },
+              input: {
+                bgcolor: "var(--color-bg)",
+              },
             }}
           />
           <TextField
@@ -64,6 +76,13 @@ export default function Login() {
             onChange={(e) => setSenha(e.target.value)}
             required
           />
+
+          {error && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+
           <Button
             type="submit"
             variant="contained"
@@ -75,8 +94,9 @@ export default function Login() {
           </Button>
         </Box>
       </Paper>
-      <Typography variant="h2" sx={{ textAlign: "center", my:5  }}>
-      Opportunum
+
+      <Typography variant="h2" sx={{ textAlign: "center", my: 5 }}>
+        Opportunum
       </Typography>
     </Box>
   );

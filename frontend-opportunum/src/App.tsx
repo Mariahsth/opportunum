@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { Box, CssBaseline } from "@mui/material";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Estacao43 from "./pages/Estacao43";
 import Estacao44 from "./pages/Estacao44";
 import PaginaGenerica from "./pages/PaginaGenerica";
 import Home from "./pages/Home";
-import Login from "./pages/Login"; 
+import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
+import { AuthProvider } from "./context/AuthProvider";
 
 const drawerWidth = 240;
 
@@ -47,10 +54,38 @@ function AppContent() {
         }}
       >
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/planilha/:nome" element={<PaginaGenerica />} />
-          <Route path="/planilha/estacao43" element={<Estacao43 />} />
-          <Route path="/planilha/estacao44" element={<Estacao44 />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/planilha/:nome"
+            element={
+              <PrivateRoute>
+                <PaginaGenerica />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/planilha/estacao43"
+            element={
+              <PrivateRoute>
+                <Estacao43 />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/planilha/estacao44"
+            element={
+              <PrivateRoute>
+                <Estacao44 />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </Box>
     </Box>
@@ -59,8 +94,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 }

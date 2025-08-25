@@ -4,4 +4,5 @@ export interface AuthContextType {
     user: User | null;
     loading: boolean;
     refreshUser: () => void;
+    logout: () => Promise<void>;
   }

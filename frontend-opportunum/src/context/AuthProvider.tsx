@@ -17,12 +17,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .finally(() => setLoading(false));
   };
 
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout"); 
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    } finally {
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
     refreshUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, refreshUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

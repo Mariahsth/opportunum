@@ -25,3 +25,13 @@ export const registerUser = async (email: string, password: string) => {
       throw "Erro desconhecido ao registrar";
   }
 };
+
+export const logoutUser = async () => {
+    try {
+      const response = await axios.post(`${baseURL}/auth/logout`, {}, { withCredentials: true });
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Erro ao fazer logout:", error);
+      throw "Erro ao fazer logout";
+    }
+  };

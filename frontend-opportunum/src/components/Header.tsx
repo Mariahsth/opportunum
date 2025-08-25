@@ -3,7 +3,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import type { HeaderProps } from "../interface/HeaderProps";
 import { CircleUserRound } from "lucide-react";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 // perfil atual (mock por enquanto) - depois passar isso via Context/Auth
 const userRole: "master" | "admin" | "assistant" = "master";
 
@@ -11,6 +12,8 @@ const userRole: "master" | "admin" | "assistant" = "master";
 export default function Header({ handleDrawerToggle }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -20,9 +23,10 @@ export default function Header({ handleDrawerToggle }: HeaderProps) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    console.log("Deslogar usuário...");
+  const handleLogout = async () => {
+    await logout();
     handleClose();
+    navigate("/login");
   };
 
   return (

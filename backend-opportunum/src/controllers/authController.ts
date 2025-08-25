@@ -1,16 +1,16 @@
-import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
+import { Request, Response } from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { User } from "../models/User";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'senhasecreta';
+const JWT_SECRET = process.env.JWT_SECRET || "senhasecreta";
 
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, roles, teams } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email já cadastrado' });
+      return res.status(400).json({ message: "Email já cadastrado" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -18,15 +18,15 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      roles: roles || ['assistant'],  
-      teams: teams || []
+      roles: roles || ["assistant"],
+      teams: teams || [],
     });
 
     await user.save();
-    res.status(201).json({ message: 'Usuário registrado com sucesso', user });
+    res.status(201).json({ message: "Usuário registrado com sucesso", user });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Erro no servidor' });
+    res.status(500).json({ message: "Erro no servidor" });
   }
 };
 
@@ -36,12 +36,12 @@ export const login = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Email inválido' });
+      return res.status(400).json({ message: "Email inválido" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Senha inválida' });
+      return res.status(400).json({ message: "Senha inválida" });
     }
 
     const token = jwt.sign(
@@ -49,10 +49,10 @@ export const login = async (req: Request, res: Response) => {
         id: user._id,
         email: user.email,
         roles: user.roles,
-        teams: user.teams
+        teams: user.teams,
       },
       JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: "1d" }
     );
 
     res.cookie("token", token, {
@@ -62,29 +62,51 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 24 * 60 * 60 * 1000, // 1 dia
     });
 
-    res.status(200).json({ message: "Login realizado com sucesso" });
+    res.status(200).json({
+      message: "Login realizado com sucesso",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        roles: user.roles,
+        teams: user.teams,
+      },
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Erro no servidor' });
+    res.status(500).json({ message: "Erro no servidor" });
   }
 };
 
 export const getMe = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.token; 
+    const token = req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ message: 'Não autenticado' });
+      return res.status(401).json({ message: "Não autenticado" });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.id).select("-password");
     if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     res.status(200).json({ user });
   } catch (error) {
-    return res.status(401).json({ message: 'Token inválido ou expirado' });
+    return res.status(401).json({ message: "Token inválido ou expirado" });
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+    return res.status(200).json({ message: "Deslogado com sucesso" });
+  } catch (error) {
+    return res.status(500).json({ message: "Erro ao deslogar" });
   }
 };

@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthProvider";
 import ManageTeams from "./pages/ManageTeams";
+import Register from "./pages/Register";
 
 const drawerWidth = 240;
 
@@ -32,6 +33,14 @@ function AppContent() {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
+      </Routes>
+    );
+  }
+  const isRegisterPage = location.pathname === "/register";
+  if (isRegisterPage) {
+    return (
+      <Routes>
+        <Route path="/register" element={<Register />} />
       </Routes>
     );
   }

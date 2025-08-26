@@ -1,21 +1,32 @@
-import { Box, Button, TextField, Typography, Paper, Toolbar } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Toolbar,
+  Link,
+} from "@mui/material";
 import { useState } from "react";
-import { loginUser } from "../services/authService"; 
+import { loginUser } from "../services/authService";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
+      setLoading(true);
       await loginUser(email, senha);
+      setLoading(false);
       alert("Login realizado com sucesso!");
       window.location.href = "/";
-
     } catch (err) {
       setError(typeof err === "string" ? err : "Erro inesperado");
     }
@@ -38,7 +49,12 @@ export default function Login() {
 
       <Paper
         elevation={3}
-        sx={{ padding: 4, width: "100%", maxWidth: 400, bgcolor: "var(--color-bg)" }}
+        sx={{
+          padding: 4,
+          width: "100%",
+          maxWidth: 400,
+          bgcolor: "var(--color-bg)",
+        }}
       >
         <Typography variant="h5" align="center" gutterBottom>
           Login
@@ -54,17 +70,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            sx={{
-              "& label": {
-                bgcolor: "var(--color-bg)",
-              },
-              "& label.Mui-focused": {
-                bgcolor: "var(--color-bg)",
-              },
-              input: {
-                bgcolor: "var(--color-bg)",
-              },
-            }}
+
           />
           <TextField
             label="Senha"
@@ -84,14 +90,29 @@ export default function Login() {
           )}
 
           <Button
+            disabled= {loading}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            Entrar
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
+          <Link
+            component={RouterLink}
+            to="/register"
+            sx={{
+              display: "block",
+              marginTop: 2,
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "text.primary",
+              "&:hover": {color:'primary.main'}
+            }}
+          >
+            Ainda não tem conta? Cadastre-se
+          </Link>
         </Box>
       </Paper>
 

@@ -26,6 +26,11 @@ export const registerUser = async (email: string, password: string) => {
   }
 };
 
+export const fetchMe = async () => {
+  const response = await axios.get(`${baseURL}/auth/me`, { withCredentials: true });
+  return response.data.user;
+};
+
 export const logoutUser = async () => {
     try {
       const response = await axios.post(`${baseURL}/auth/logout`, {}, { withCredentials: true });

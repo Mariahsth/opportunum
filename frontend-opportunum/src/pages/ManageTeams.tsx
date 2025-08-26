@@ -1,142 +1,262 @@
 import {
-  Box,
-  Toolbar,
-  Typography,
-  Divider,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { fetchAllUsers } from "../services/userService";
-import type { User } from "../interface/User";
-import { EditIcon, SaveIcon, Trash } from "lucide-react";
+    Box,
+    Toolbar,
+    Typography,
+    Divider,
+    Card,
+    CardContent,
+    Grid,
+    Button,
+    Select,
+    MenuItem,
+    FormControl,
+  } from "@mui/material";
+  import { useState } from "react";
+  import { useAuth } from "../hooks/useAuth";
+  import type { User } from "../interface/User";
+  import { Ban, EditIcon, SaveIcon, Trash } from "lucide-react";
+import { updateUser } from "../services/userService";
+  
+  const mockTimes = ["Time A", "Time B", "Time C"];
+  
+  export default function ManageTeams() {
+    const { user, loading, availableRoles, users: equipe, setUsers } = useAuth();
+    const [modoEdicao, setModoEdicao] = useState<Record<string, boolean>>({});
+    const [valoresEditados, setValoresEditados] = useState<
+      Record<string, Partial<User>>
+    >({});
+  
+    const handleSave = async (id: string) => {
+      setModoEdicao((prev) => ({ ...prev, [id]: false }));
+      const dadosAtualizados = valoresEditados[id];
 
-export default function ManageTeams() {
-  const [equipe, setEquipe] = useState([]);
-  const { user, loading } = useAuth();
-  const [modoEdicao, setModoEdicao] = useState<Record<string, boolean>>({});
-
-  const handleSave = (id: string) => {
-    setModoEdicao((prev) => ({ ...prev, [id]: false }));
-
-  }
-  const handleEdit = (id: string) => {
-    setModoEdicao((prev) => ({ ...prev, [id]: true }));
-  }
-
-  useEffect(() => {
-    const carregarUsuarios = async () => {
       try {
-        const usuarios = await fetchAllUsers();
-        setEquipe(usuarios);
+        const userAtualizado = await updateUser(id, {
+          roles: dadosAtualizados.roles,
+          teams: dadosAtualizados.teams,
+        });
+    
+        setValoresEditados((prev) => {
+          const novo = { ...prev };
+          delete novo[id];
+          return novo;
+        });
+    
+        setUsers((prev) =>
+            prev.map((membro) =>
+              membro._id === id ? { ...membro, ...userAtualizado } : membro
+            )
+          );
       } catch (error) {
-        console.error("Erro ao carregar usuários:", error);
+        console.error("Erro ao salvar alterações:", error);
+      }
+      
+    };
+  
+    const handleEdit = (id: string) => {
+      setModoEdicao((prev) => ({ ...prev, [id]: true }));
+  
+      const membro = equipe.find((m) => m._id === id);
+      if (membro) {
+        setValoresEditados((prev) => ({
+          ...prev,
+          [id]: {
+            roles: membro.roles,
+            teams: membro.teams,
+          },
+        }));
       }
     };
-
-    carregarUsuarios();
-  }, []);
-
-  return (
-    <Box>
-      <Toolbar />
-      <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
-        Gerenciar Equipe
-      </Typography>
-      <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
-
-      <Card>
-        <CardContent>
-          <Typography>Olá, {user?.name}</Typography>
-          <Typography>
-            Você tem {equipe.length} membros na sua equipe
-          </Typography>
-        </CardContent>
-      </Card>
-      <Grid container spacing={2} sx={{ mt: 3 }}>
-        {equipe.map((membro: User, index) => (
-          <Grid size={{ xs: 12, sm: 6 }} key={index}>
-            <Card>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: '1rem'
-                }}
-              >
-                <Box>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "row", gap: "1rem" }}
+  
+    const handleChange = (
+      id: string,
+      campo: keyof User,
+      valor: string | string[]
+    ) => {
+      setValoresEditados((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          [campo]: valor,
+        },
+      }));
+    };
+  
+    return (
+      <Box>
+        <Toolbar />
+        <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
+          Gerenciar Equipe
+        </Typography>
+        <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
+  
+        <Card>
+          <CardContent>
+            <Typography>Olá, {user?.name}</Typography>
+            <Typography>
+              Você tem {equipe.length} membros na sua equipe
+            </Typography>
+          </CardContent>
+        </Card>
+  
+        <Grid container spacing={2} sx={{ mt: 3 }}>
+          {equipe.map((membro) => {
+            const emEdicao = modoEdicao[membro._id];
+            const valores = valoresEditados[membro._id] || {};
+            return (
+              <Grid size={{ xs: 12, sm: 6 }} key={membro._id}>
+                <Card>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "1rem",
+                    }}
                   >
-                    <Typography>Nome: </Typography>
-                    <Typography>{membro.name}</Typography>
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "row", gap: "1rem" }}
-                  >
-                    <Typography>Email:</Typography>
-                    <Typography>{membro.email}</Typography>
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "row", gap: "1rem" }}
-                  >
-                    <Typography>Tipo de acesso:</Typography>
-                    <Typography>{membro.roles}</Typography>
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "row", gap: "1rem" }}
-                  >
-                    <Typography>Times:</Typography>
-                    <Typography>{membro.teams}</Typography>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection:'column'
-                  }}
-                >
-                  <Button
-                    loading={loading}
-                    loadingPosition="start"
-                    startIcon={<SaveIcon />}
-                    variant="contained"
-                    color="success"
-                    disabled={!modoEdicao[membro._id]}
-                    onClick={() => handleSave(membro._id)}
-                  >
-                    Salvar
-                  </Button>
-                  <Button
-                    loading={loading}
-                    loadingPosition="start"
-                    startIcon={<EditIcon />}
-                    variant="contained"
-                    disabled={!!modoEdicao[membro._id]}
-                    sx={{ mt: 2 }}
-                    onClick={() => handleEdit(membro._id)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    loading={loading}
-                    loadingPosition="start"
-                    startIcon={<Trash />}
-                    variant="contained"
-                    color="error"
-                    sx={{ mt: 2 }}
-                  >
-                    Deletar
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-}
+                    <Box>
+                      <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Typography>Nome: </Typography>
+                        <Typography>{membro.name}</Typography>
+                      </Box>
+  
+                      <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Typography>Email:</Typography>
+                        <Typography>{membro.email}</Typography>
+                      </Box>
+  
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography>Tipo de acesso:</Typography>
+                        {emEdicao ? (
+                          <FormControl size="small">
+                            <Select
+                              value={(valores.roles?.[0] || "")}
+                              onChange={(e) =>
+                                handleChange(membro._id, "roles", [e.target.value])
+                              }
+                              displayEmpty
+                              sx={{ minWidth: 160 }}
+                            >
+                              {availableRoles.map((tipo) => (
+                                <MenuItem key={tipo} value={tipo}>
+                                  {tipo}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        ) : (
+                          <Typography>
+                            {Array.isArray(membro.roles)
+                              ? membro.roles.join(", ")
+                              : membro.roles}
+                          </Typography>
+                        )}
+                      </Box>
+  
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography>Times:</Typography>
+                        {emEdicao ? (
+                          <FormControl size="small">
+                            <Select
+                              multiple
+                              value={(valores.teams as string[]) || []}
+                              onChange={(e) =>
+                                handleChange(
+                                  membro._id,
+                                  "teams",
+                                  e.target.value as string[]
+                                )
+                              }
+                              sx={{ minWidth: 160 }}
+                            >
+                              {mockTimes.map((time) => (
+                                <MenuItem key={time} value={time}>
+                                  {time}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        ) : (
+                          <Typography>
+                            {Array.isArray(membro.teams)
+                              ? membro.teams.join(", ")
+                              : membro.teams}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Box>
+  
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      {emEdicao ? (
+                        <>
+                          <Button
+                            loading={loading}
+                            loadingPosition="start"
+                            startIcon={<SaveIcon />}
+                            variant="contained"
+                            color="success"
+                            onClick={() => handleSave(membro._id)}
+                          >
+                            Salvar
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="warning"
+                            startIcon={<Ban />}
+                            sx={{ mt: 2 }}
+                            onClick={() =>
+                              setModoEdicao((prev) => ({
+                                ...prev,
+                                [membro._id]: false,
+                              }))
+                            }
+                          >
+                            Cancelar
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            loading={loading}
+                            loadingPosition="start"
+                            startIcon={<EditIcon />}
+                            variant="contained"
+                            onClick={() => handleEdit(membro._id)}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            loading={loading}
+                            loadingPosition="start"
+                            startIcon={<Trash />}
+                            variant="contained"
+                            color="error"
+                            sx={{ mt: 2 }}
+                            onClick={() => console.log("Deletar", membro._id)}
+                          >
+                            Deletar
+                          </Button>
+                        </>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Box>
+    );
+  }
+  

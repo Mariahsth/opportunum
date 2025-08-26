@@ -4,6 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes';
+import projectRoutes from './routes/projectsRoutes';
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes";
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use("/api", userRoutes);
+app.use("/api/projects", projectRoutes);
 
 const PORT = process.env.PORT || 5000;
 

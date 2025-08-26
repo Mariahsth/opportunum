@@ -61,7 +61,7 @@ export default function Sidebar({
             to={"/"}
             selected={location.pathname === "/"}
           >
-            <ListItemText >Início</ListItemText>
+            <ListItemText >Meus Projetos</ListItemText>
           </ListItemButton>
         </ListItem>
         <Divider

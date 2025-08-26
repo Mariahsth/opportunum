@@ -29,6 +29,7 @@ export default function Login() {
       window.location.href = "/";
     } catch (err) {
       setError(typeof err === "string" ? err : "Erro inesperado");
+      setLoading(false);
     }
   };
 

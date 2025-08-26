@@ -10,7 +10,7 @@ export const fetchAvailableRoles = async () => {
   return response.data.roles;
 };
 
-export const updateUser = async (id: string, data: { roles?: string[]; teams?: string[] }) => {
+export const updateUser = async (id: string, data: { roles?: string[]; projects?: string[] }) => {
   const res = await api.put(`/users/${id}`, data);
   return res.data.user;
 };

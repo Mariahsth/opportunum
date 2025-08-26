@@ -6,10 +6,9 @@ interface JwtPayload {
   id: string;
   email: string;
   roles: string[];
-  teams: string[];
+  projects: string[];
 }
 const JWT_SECRET = process.env.JWT_SECRET || "senhasecreta";
-console.log("jwt secret:", JWT_SECRET)
 export const protect = async (req: any, res: Response, next: NextFunction) => {
   let token;
 

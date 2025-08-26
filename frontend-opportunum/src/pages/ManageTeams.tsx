@@ -17,7 +17,7 @@ import {
   import { Ban, EditIcon, SaveIcon, Trash } from "lucide-react";
   import { updateUser, deleteUser as deleteUserService } from "../services/userService";
   
-  const mockTimes = ["Time A", "Time B", "Time C"];
+  const mockProjects = ["Projeto A", "Projeto B", "Projeto C"];
   
   export default function ManageTeams() {
     const { user, loading, availableRoles, users: equipe, setUsers } = useAuth();
@@ -33,7 +33,7 @@ import {
       try {
         const userAtualizado = await updateUser(id, {
           roles: dadosAtualizados.roles,
-          teams: dadosAtualizados.teams,
+          projects: dadosAtualizados.projects,
         });
     
         setValoresEditados((prev) => {
@@ -62,7 +62,7 @@ import {
           ...prev,
           [id]: {
             roles: membro.roles,
-            teams: membro.teams,
+            projects: membro.projects,
           },
         }));
       }
@@ -176,33 +176,33 @@ import {
                           alignItems: "center",
                         }}
                       >
-                        <Typography>Times:</Typography>
+                        <Typography>Projetos:</Typography>
                         {emEdicao ? (
                           <FormControl size="small">
                             <Select
                               multiple
-                              value={(valores.teams as string[]) || []}
+                              value={(valores.projects as string[]) || []}
                               onChange={(e) =>
                                 handleChange(
                                   membro._id,
-                                  "teams",
+                                  "projects",
                                   e.target.value as string[]
                                 )
                               }
                               sx={{ minWidth: 160 }}
                             >
-                              {mockTimes.map((time) => (
-                                <MenuItem key={time} value={time}>
-                                  {time}
+                              {mockProjects.map((project) => (
+                                <MenuItem key={project} value={project}>
+                                  {project}
                                 </MenuItem>
                               ))}
                             </Select>
                           </FormControl>
                         ) : (
                           <Typography>
-                            {Array.isArray(membro.teams)
-                              ? membro.teams.join(", ")
-                              : membro.teams}
+                            {Array.isArray(membro.projects)
+                              ? membro.projects.join(", ")
+                              : membro.projects}
                           </Typography>
                         )}
                       </Box>

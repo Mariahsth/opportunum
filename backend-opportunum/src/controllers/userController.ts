@@ -23,11 +23,11 @@ export const getAvailableRoles = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { roles, teams } = req.body;
+    const { roles, projects } = req.body;
 
     const user = await User.findByIdAndUpdate(
       id,
-      { roles, teams },
+      { roles, projects },
       { new: true }
     ).select("-password");
 

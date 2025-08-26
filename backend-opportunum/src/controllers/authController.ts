@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "senhasecreta";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, roles, teams } = req.body;
+    const { name, email, password, roles, projects } = req.body;
 
     if (!isValidName(name)) {
       return res.status(400).json({ message: "Nome inválido. Use ao menos 3 letras, sem números ou símbolos." });
@@ -35,7 +35,7 @@ export const register = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
       roles: roles || ["assistant"],
-      teams: teams || [],
+      projects: projects || [],
     });
 
     await user.save();
@@ -65,7 +65,7 @@ export const login = async (req: Request, res: Response) => {
         id: user._id,
         email: user.email,
         roles: user.roles,
-        teams: user.teams,
+        projects: user.projects,
       },
       JWT_SECRET,
       { expiresIn: "1d" }
@@ -85,7 +85,7 @@ export const login = async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
         roles: user.roles,
-        teams: user.teams,
+        projects: user.projects,
       },
     });
   } catch (error) {

@@ -3,6 +3,6 @@ export interface IUser extends Document {
     email: string;
     password: string;
     roles: string[];       
-    teams?: string[];       
+    projects?: string[];       
   }
   

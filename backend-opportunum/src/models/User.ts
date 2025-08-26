@@ -23,7 +23,7 @@ const userSchema = new Schema<IUser>({
     default: ['assistant'], 
     enum: ['master', 'admin', 'assistant']
   },
-  teams: {
+  projects: {
     type: [String],
     default: []
   }

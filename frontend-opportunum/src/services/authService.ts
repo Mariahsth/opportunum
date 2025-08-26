@@ -1,42 +1,21 @@
-import axios from "axios";
-import { baseURL } from "../api/api";
-
+import api from "../api/api";
 
 export const loginUser = async (email: string, password: string) => {
-  try {
-    const response = await axios.post(`${baseURL}/auth/login`, { email, password }, { withCredentials: true });
-    return response.data; 
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-        throw error.response?.data?.message || "Erro ao fazer login";
-      }
-      throw "Erro desconhecido ao fazer login";
-  }
+  const res = await api.post("/auth/login", { email, password });
+  return res.data;
 };
 
 export const registerUser = async (email: string, password: string) => {
-  try {
-    const response = await axios.post(`${baseURL}/auth/register`, { email, password });
-    return response.data; 
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-        throw error.response?.data?.message || "Erro ao registrar";
-      }
-      throw "Erro desconhecido ao registrar";
-  }
+  const res = await api.post("/auth/register", { email, password });
+  return res.data;
 };
 
 export const fetchMe = async () => {
-  const response = await axios.get(`${baseURL}/auth/me`, { withCredentials: true });
-  return response.data.user;
+  const res = await api.get("/auth/me");
+  return res.data.user;
 };
 
 export const logoutUser = async () => {
-    try {
-      const response = await axios.post(`${baseURL}/auth/logout`, {}, { withCredentials: true });
-      return response.data;
-    } catch (error: unknown) {
-      console.error("Erro ao fazer logout:", error);
-      throw "Erro ao fazer logout";
-    }
-  };
+  const res = await api.post("/auth/logout");
+  return res.data;
+};

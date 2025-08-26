@@ -1,12 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes";
 
-dotenv.config();
 const app = express();
 
 app.use(cors({

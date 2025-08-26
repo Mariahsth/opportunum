@@ -1,10 +1,18 @@
-import { Router } from "express";
-import { getAllUsers, getAvailableRoles, updateUser } from "../controllers/userController";
+import express from "express";
+import {
+  getAllUsers,
+  getAvailableRoles,
+  updateUser,
+  deleteUser,
+} from "../controllers/userController";
+import { protect } from "../middleware/authMiddleware";
+import { authorizeRoles } from "../middleware/authorizeRoles";
 
-const router = Router();
+const router = express.Router();
 
-router.get("/users", getAllUsers);
-router.get("/roles", getAvailableRoles);
-router.put("/users/:id", updateUser);
+router.get("/users", protect, authorizeRoles("admin", "master"), getAllUsers);
+router.get("/roles", protect, authorizeRoles("admin", "master"), getAvailableRoles);
+router.put("/users/:id", protect, authorizeRoles("admin", "master"), updateUser);
+router.delete("/users/:id", protect, authorizeRoles("admin", "master"), deleteUser);
 
 export default router;

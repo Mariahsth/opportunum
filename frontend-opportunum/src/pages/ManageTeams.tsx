@@ -15,7 +15,7 @@ import {
   import { useAuth } from "../hooks/useAuth";
   import type { User } from "../interface/User";
   import { Ban, EditIcon, SaveIcon, Trash } from "lucide-react";
-import { updateUser } from "../services/userService";
+  import { updateUser, deleteUser as deleteUserService } from "../services/userService";
   
   const mockTimes = ["Time A", "Time B", "Time C"];
   
@@ -81,7 +81,18 @@ import { updateUser } from "../services/userService";
         },
       }));
     };
-  
+
+    const handleDelete = async (id: string) => {
+      const confirm = window.confirm("Tem certeza que deseja deletar este usuário?");
+      if (!confirm) return;
+    
+      try {
+        await deleteUserService(id);
+        setUsers((prev) => prev.filter((membro) => membro._id !== id));
+      } catch (error) {
+        console.error("Erro ao deletar usuário:", error);
+      }
+    };
     return (
       <Box>
         <Toolbar />
@@ -243,7 +254,7 @@ import { updateUser } from "../services/userService";
                             variant="contained"
                             color="error"
                             sx={{ mt: 2 }}
-                            onClick={() => console.log("Deletar", membro._id)}
+                            onClick={() => handleDelete(membro._id)}
                           >
                             Deletar
                           </Button>

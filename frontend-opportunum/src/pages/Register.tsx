@@ -10,6 +10,7 @@ import {
   import { useState } from "react";
   import { registerUser } from "../services/authService";
   import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { isStrongPassword, isValidEmail, isValidName } from "../utils/validators";
   
   export default function Register() {
     const [name, setName] = useState("");
@@ -21,18 +22,34 @@ import {
     const navigate = useNavigate();
 
     const handleRegister = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setError("");
-      try {
+        e.preventDefault();
+        setError("");
+      
+        if (!isValidName(name)) {
+          setError("Nome inválido. Use ao menos 3 letras, sem números ou símbolos.");
+          return;
+        }
+      
+        if (!isValidEmail(email)) {
+          setError("Email inválido.");
+          return;
+        }
+      
+        if (!isStrongPassword(senha)) {
+          setError("A senha deve ter ao menos 6 caracteres, incluindo maiúsculas, minúsculas, números e símbolos.");
+          return;
+        }
+      
         setLoading(true);
-        await registerUser(name, email, senha);
+        try {
+          await registerUser(name, email, senha);
+          alert("Cadastro realizado com sucesso!");
+          navigate("/login");
+        } catch (err) {
+          setError(typeof err === "string" ? err : "Erro inesperado");
+        }
         setLoading(false);
-        alert("Cadastro realizado com sucesso!");
-        navigate("/login");
-    } catch (err) {
-        setError(typeof err === "string" ? err : "Erro inesperado");
-    }
-    };
+      };
   
     return (
       <Box

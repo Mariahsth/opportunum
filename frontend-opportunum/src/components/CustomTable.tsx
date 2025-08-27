@@ -20,7 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import { formatDate } from "../utils/formatDate";
+import { formatDateForDisplay } from "../utils/formatDate";
 import type { RowData } from "../interface/RowData";
 import DashboardProgress from "./DashboardProgress";
 import DashboardDeadline from "./DashboardDeadline";
@@ -230,7 +230,7 @@ export default function CustomTable() {
                           />
                         )
                       ) : col.field === "prazo" ? (
-                        formatDate(value)
+                        formatDateForDisplay(value)
                       ) : col.field === "andamento" ? (
                         value ? (
                           value

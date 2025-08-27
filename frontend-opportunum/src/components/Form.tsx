@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import type { IProject } from "../interface/Project";
 import { updateProject } from "../services/projectsService";
 import { useAuth } from "../hooks/useAuth";
+import { formatDateForInput } from "../utils/formatDate";
 
 const labels = [
   { key: "perspectiva", label: "Perspectiva/Eixo" },
@@ -47,7 +48,7 @@ export default function Form({ project }: FormProps) {
         objetivo: project.objetivo || "",
         objetivoEstrategico: project.objetivoEstrategico || "",
         estrategia: project.estrategia || "",
-        prazo: project.prazo || "",
+        prazo: formatDateForInput(project.prazo) || "",
         responsavel: project.responsavel || "",
       });
     
@@ -63,7 +64,11 @@ export default function Form({ project }: FormProps) {
     const handleSave = async () => {
       setLoading(true);
       try {
-        await updateProject(project._id, formData);
+        const projectData = {
+          ...formData,
+          prazo: formData.prazo ? `${formData.prazo}T00:00:00` : undefined,
+        };
+        await updateProject(project._id, projectData);
         await refreshProjects();
         setSalvo(true);
       } catch (error) {

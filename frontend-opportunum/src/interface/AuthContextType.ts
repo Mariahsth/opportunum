@@ -1,3 +1,4 @@
+import type { IProject } from "./Project";
 import type { User } from "./User";
 
 export interface AuthContextType {
@@ -9,4 +10,5 @@ export interface AuthContextType {
   users: User[];
   fetchAllUsers: () => void;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  projects:IProject[];
 }

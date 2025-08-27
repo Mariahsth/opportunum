@@ -1,117 +1,132 @@
 import {
-    Box,
-    Toolbar,
-    Typography,
-    Divider,
-    Card,
-    CardContent,
-    Grid,
-    Button,
-    Select,
-    MenuItem,
-    FormControl,
-  } from "@mui/material";
-  import { useState } from "react";
-  import { useAuth } from "../hooks/useAuth";
-  import type { User } from "../interface/User";
-  import { Ban, EditIcon, SaveIcon, Trash } from "lucide-react";
-  import { updateUser, deleteUser as deleteUserService } from "../services/userService";
-  
-  const mockProjects = ["Projeto A", "Projeto B", "Projeto C"];
-  
-  export default function ManageTeams() {
-    const { user, loading, availableRoles, users: equipe, setUsers } = useAuth();
-    const [modoEdicao, setModoEdicao] = useState<Record<string, boolean>>({});
-    const [valoresEditados, setValoresEditados] = useState<
-      Record<string, Partial<User>>
-    >({});
-  
-    const handleSave = async (id: string) => {
-      setModoEdicao((prev) => ({ ...prev, [id]: false }));
-      const dadosAtualizados = valoresEditados[id];
+  Box,
+  Toolbar,
+  Typography,
+  Divider,
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+} from "@mui/material";
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import type { User } from "../interface/User";
+import { Ban, EditIcon, SaveIcon, Trash } from "lucide-react";
+import {
+  updateUser,
+  deleteUser as deleteUserService,
+} from "../services/userService";
+import type { IProject } from "../interface/Project";
 
-      try {
-        const userAtualizado = await updateUser(id, {
-          roles: dadosAtualizados.roles,
-          projects: dadosAtualizados.projects,
-        });
-    
-        setValoresEditados((prev) => {
-          const novo = { ...prev };
-          delete novo[id];
-          return novo;
-        });
-    
-        setUsers((prev) =>
-            prev.map((membro) =>
-              membro._id === id ? { ...membro, ...userAtualizado } : membro
-            )
-          );
-      } catch (error) {
-        console.error("Erro ao salvar alterações:", error);
-      }
-      
-    };
-  
-    const handleEdit = (id: string) => {
-      setModoEdicao((prev) => ({ ...prev, [id]: true }));
-  
-      const membro = equipe.find((m) => m._id === id);
-      if (membro) {
-        setValoresEditados((prev) => ({
-          ...prev,
-          [id]: {
-            roles: membro.roles,
-            projects: membro.projects,
-          },
-        }));
-      }
-    };
-  
-    const handleChange = (
-      id: string,
-      campo: keyof User,
-      valor: string | string[]
-    ) => {
+export default function ManageTeams() {
+  const {
+    user,
+    loading,
+    availableRoles,
+    users: equipe,
+    setUsers,
+    projects,
+  } = useAuth();
+  const [modoEdicao, setModoEdicao] = useState<Record<string, boolean>>({});
+  const [valoresEditados, setValoresEditados] = useState<
+    Record<string, Partial<User>>
+  >({});
+
+  const handleSave = async (id: string) => {
+    setModoEdicao((prev) => ({ ...prev, [id]: false }));
+    const dadosAtualizados = valoresEditados[id];
+
+    try {
+      const userAtualizado = await updateUser(id, {
+        roles: dadosAtualizados.roles,
+        projects: dadosAtualizados.projects?.map((proj) =>
+          typeof proj === "string" ? proj : proj._id
+        ),
+      });
+
+      setValoresEditados((prev) => {
+        const novo = { ...prev };
+        delete novo[id];
+        return novo;
+      });
+
+      setUsers((prev) =>
+        prev.map((membro) =>
+          membro._id === id ? { ...membro, ...userAtualizado } : membro
+        )
+      );
+    } catch (error) {
+      console.error("Erro ao salvar alterações:", error);
+    }
+  };
+
+  const handleEdit = (id: string) => {
+    setModoEdicao((prev) => ({ ...prev, [id]: true }));
+
+    const membro = equipe.find((m) => m._id === id);
+    if (membro) {
       setValoresEditados((prev) => ({
         ...prev,
         [id]: {
-          ...prev[id],
-          [campo]: valor,
+          roles: membro.roles,
+          projects: membro.projects,
         },
       }));
-    };
+    }
+  };
 
-    const handleDelete = async (id: string) => {
-      const confirm = window.confirm("Tem certeza que deseja deletar este usuário?");
-      if (!confirm) return;
-    
-      try {
-        await deleteUserService(id);
-        setUsers((prev) => prev.filter((membro) => membro._id !== id));
-      } catch (error) {
-        console.error("Erro ao deletar usuário:", error);
-      }
-    };
-    return (
-      <Box>
-        <Toolbar />
-        <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
-          Gerenciar Equipe
-        </Typography>
-        <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
-  
-        <Card>
-          <CardContent>
-            <Typography>Olá, {user?.name}</Typography>
-            <Typography>
-              Você tem {equipe.filter((m) => m._id !== user?._id).length} membros na sua equipe
-            </Typography>
-          </CardContent>
-        </Card>
-  
-        <Grid container spacing={2} sx={{ mt: 3 }}>
-          {equipe.filter((membro) => membro._id !==user?._id).map((membro) => {
+  const handleChange = (
+    id: string,
+    campo: keyof User,
+    valor: string | string[]
+  ) => {
+    setValoresEditados((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [campo]: valor,
+      },
+    }));
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirm = window.confirm(
+      "Tem certeza que deseja deletar este usuário?"
+    );
+    if (!confirm) return;
+
+    try {
+      await deleteUserService(id);
+      setUsers((prev) => prev.filter((membro) => membro._id !== id));
+    } catch (error) {
+      console.error("Erro ao deletar usuário:", error);
+    }
+  };
+  return (
+    <Box>
+      <Toolbar />
+      <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
+        Gerenciar Equipe
+      </Typography>
+      <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
+
+      <Card>
+        <CardContent>
+          <Typography>Olá, {user?.name}</Typography>
+          <Typography>
+            Você tem {equipe.filter((m) => m._id !== user?._id).length} membros
+            na sua equipe
+          </Typography>
+        </CardContent>
+      </Card>
+
+      <Grid container spacing={2} sx={{ mt: 3 }}>
+        {equipe
+          .filter((membro) => membro._id !== user?._id)
+          .map((membro) => {
             const emEdicao = modoEdicao[membro._id];
             const valores = valoresEditados[membro._id] || {};
             return (
@@ -129,12 +144,12 @@ import {
                         <Typography>Nome: </Typography>
                         <Typography>{membro.name}</Typography>
                       </Box>
-  
+
                       <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Typography>Email:</Typography>
                         <Typography>{membro.email}</Typography>
                       </Box>
-  
+
                       <Box
                         sx={{
                           display: "flex",
@@ -146,9 +161,11 @@ import {
                         {emEdicao ? (
                           <FormControl size="small">
                             <Select
-                              value={(valores.roles?.[0] || "")}
+                              value={valores.roles?.[0] || ""}
                               onChange={(e) =>
-                                handleChange(membro._id, "roles", [e.target.value])
+                                handleChange(membro._id, "roles", [
+                                  e.target.value,
+                                ])
                               }
                               displayEmpty
                               sx={{ minWidth: 160 }}
@@ -168,7 +185,7 @@ import {
                           </Typography>
                         )}
                       </Box>
-  
+
                       <Box
                         sx={{
                           display: "flex",
@@ -181,7 +198,12 @@ import {
                           <FormControl size="small">
                             <Select
                               multiple
-                              value={(valores.projects as string[]) || []}
+                              value={
+                                (valores.projects?.map(
+                                  (proj: IProject | string) =>
+                                    typeof proj === "string" ? proj : proj._id
+                                ) as string[]) || []
+                              }
                               onChange={(e) =>
                                 handleChange(
                                   membro._id,
@@ -191,23 +213,35 @@ import {
                               }
                               sx={{ minWidth: 160 }}
                             >
-                              {mockProjects.map((project) => (
-                                <MenuItem key={project} value={project}>
-                                  {project}
-                                </MenuItem>
-                              ))}
+                              {projects
+                                .map((project) => (
+                                  <MenuItem
+                                    key={project._id}
+                                    value={project._id}
+                                  >
+                                    {project.title}
+                                  </MenuItem>
+                                ))}
                             </Select>
                           </FormControl>
                         ) : (
                           <Typography>
-                            {Array.isArray(membro.projects)
-                              ? membro.projects.join(", ")
-                              : membro.projects}
+                            {(membro.projects || [])
+                              .map((proj: string | IProject) => {
+                                const id =
+                                  typeof proj === "string" ? proj : proj._id;
+                                const found = projects.find(
+                                  (p) => p._id === id
+                                );
+                                return found?.title;
+                              })
+                              .filter(Boolean)
+                              .join(", ")}
                           </Typography>
                         )}
                       </Box>
                     </Box>
-  
+
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       {emEdicao ? (
                         <>
@@ -266,8 +300,7 @@ import {
               </Grid>
             );
           })}
-        </Grid>
-      </Box>
-    );
-  }
-  
+      </Grid>
+    </Box>
+  );
+}

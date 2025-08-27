@@ -4,12 +4,15 @@ import type { User } from "../interface/User";
 import type { AuthProviderProps } from "../interface/AuthProviderProps";
 import { fetchAllUsers, fetchAvailableRoles } from "../services/userService";
 import { fetchMe, logoutUser } from "../services/authService";
+import type { IProject } from "../interface/Project";
+import { fetchProjects } from "../services/projectsService";
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [availableRoles, setAvailableRoles] = useState<string[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [projects, setProjects] = useState<IProject[]>([]);
 
   const refreshUser = async () => {
     setLoading(true);
@@ -20,6 +23,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadProjects = async () => {
+    try {
+      const projs = await fetchProjects();
+      setProjects(projs || []);
+    } catch (error) {
+      console.error("Erro ao buscar projetos:", error);
     }
   };
 
@@ -55,6 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     refreshUser();
     loadAvailableRoles();
     loadUsers();
+    loadProjects();
   }, []);
 
   return (
@@ -68,6 +81,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logout,
         fetchAllUsers: loadUsers, 
         setUsers, 
+        projects,
       }}
     >
       {children}

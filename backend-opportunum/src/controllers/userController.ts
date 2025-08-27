@@ -3,7 +3,7 @@ import { User } from "../models/User";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}, "-password");
+    const users = await User.find({}, "-password").populate("projects", "_id title");
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ message: "Erro ao buscar usuários" });

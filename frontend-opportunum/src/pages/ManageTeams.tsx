@@ -105,13 +105,13 @@ import {
           <CardContent>
             <Typography>Olá, {user?.name}</Typography>
             <Typography>
-              Você tem {equipe.length} membros na sua equipe
+              Você tem {equipe.filter((m) => m._id !== user?._id).length} membros na sua equipe
             </Typography>
           </CardContent>
         </Card>
   
         <Grid container spacing={2} sx={{ mt: 3 }}>
-          {equipe.map((membro) => {
+          {equipe.filter((membro) => membro._id !==user?._id).map((membro) => {
             const emEdicao = modoEdicao[membro._id];
             const valores = valoresEditados[membro._id] || {};
             return (

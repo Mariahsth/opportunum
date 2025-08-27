@@ -11,4 +11,5 @@ export interface AuthContextType {
   fetchAllUsers: () => void;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   projects:IProject[];
+  refreshProjects: () => void
 }

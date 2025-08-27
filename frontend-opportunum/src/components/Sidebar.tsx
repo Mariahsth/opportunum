@@ -23,6 +23,7 @@ import { Link, useLocation } from "react-router-dom";
 import type { SidebarProps } from "../interface/SidebarProps";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { createProject } from "../services/projectsService";
 
 
 export default function Sidebar({
@@ -34,11 +35,26 @@ export default function Sidebar({
   const [newPage, setNewPage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading, projects } = useAuth();
+  const { user, loading, projects, refreshProjects } = useAuth();
   const isMaster = user?.roles.includes("master");
 
   if (loading) {
     return null; 
+  }
+
+  const handleCreateProject = async (title:string) => {
+    try {
+      const createdProject = await createProject(title);
+      await refreshProjects?.();
+      const slug = createdProject.title
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+      setOpen(false);
+      navigate(`/planilha/${slug}`);
+      setNewPage("");
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const drawerContent = (
@@ -121,15 +137,7 @@ export default function Sidebar({
                 <DialogActions>
                   <Button onClick={() => setOpen(false)}>Cancelar</Button>
                   <Button
-                    onClick={() => {
-                      const path = `/planilha/${newPage
-                        .toLowerCase()
-                        .replace(/\s+/g, "-")}`;
-                      // setPaginas((prev) => [...prev, { name: newPage, path }]);
-                      setOpen(false);
-                      navigate(path);
-                      setNewPage("");
-                    }}
+                    onClick={() => handleCreateProject(newPage)}
                   >
                     Salvar
                   </Button>

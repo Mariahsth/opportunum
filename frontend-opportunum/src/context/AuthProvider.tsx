@@ -85,6 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         fetchAllUsers: loadUsers, 
         setUsers, 
         projects,
+        refreshProjects: loadProjects,
       }}
     >
       {children}

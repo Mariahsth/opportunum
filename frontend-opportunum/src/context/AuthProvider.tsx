@@ -27,11 +27,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const loadProjects = async () => {
+    setLoading(true);
     try {
       const projs = await fetchProjects();
       setProjects(projs || []);
     } catch (error) {
       console.error("Erro ao buscar projetos:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

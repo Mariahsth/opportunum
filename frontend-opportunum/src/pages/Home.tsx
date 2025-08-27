@@ -1,27 +1,9 @@
 import { Box, Toolbar, Typography, Divider, Card, CardContent, Grid, CircularProgress } from "@mui/material";
-import { useEffect, useState } from "react";
-import { fetchProjects } from "../services/projectsService";
-import type { IProject } from "../interface/Project";
+import { useAuth } from "../hooks/useAuth";
 
 
 export default function Home() {
-  const [projetos, setProjetos] = useState<IProject[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        const data = await fetchProjects();
-        setProjetos(data);
-      } catch (err) {
-        console.error("Erro ao carregar projetos:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProjects();
-  }, []);
+  const { user,loading, projects} = useAuth();
 
   if (loading) {
     return (
@@ -40,12 +22,12 @@ export default function Home() {
 
       <Card>
         <CardContent>
-            <Typography>Olá, usuário</Typography>
-            <Typography>Você tem {projetos.length} projetos em andamento</Typography>
+            <Typography>Olá, {user?.name}</Typography>
+            <Typography>Você tem {projects.length} projetos em andamento</Typography>
         </CardContent>
       </Card>
       <Grid container spacing={2} sx={{mt:3}}>
-        {projetos.map((projeto) => (
+        {projects.map((projeto) => (
             <Grid size={{ xs: 12, sm: 6 }} key={projeto._id} >
                 <Card >
                     <CardContent sx={{display:'flex', justifyContent:'center'}}>

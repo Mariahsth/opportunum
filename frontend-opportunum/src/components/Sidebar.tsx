@@ -24,13 +24,6 @@ import type { SidebarProps } from "../interface/SidebarProps";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
-// páginas de exemplo -> depois buscar no banco de dados
-const paginasDisponiveis = [
-  { name: "Instituto Estação 43", path: "/planilha/estacao43" },
-  { name: "Instituto Estação 44", path: "/planilha/estacao44" },
-];
-
-
 
 export default function Sidebar({
   mobileOpen,
@@ -39,11 +32,9 @@ export default function Sidebar({
 }: SidebarProps) {
   const [open, setOpen] = useState(false);
   const [newPage, setNewPage] = useState("");
-  const [paginas, setPaginas] = useState(paginasDisponiveis);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { user, loading } = useAuth();
+  const { user, loading, projects } = useAuth();
   const isMaster = user?.roles.includes("master");
 
   if (loading) {
@@ -80,23 +71,27 @@ export default function Sidebar({
             height: "3px",
           }}
         />
-        {paginas.map((page, index, array) => (
-          <React.Fragment key={page.path}>
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                to={page.path}
-                selected={location.pathname === page.path}
-              >
-                <ListItemText primary={page.name} />
-              </ListItemButton>
-            </ListItem>
+        {projects.map((page, index, array) => {
+          const slug = page.title.toLowerCase().replace(/\s+/g, "-"); 
 
-            {index < array.length - 1 && (
-              <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }} />
-            )}
-          </React.Fragment>
-        ))}
+          return (
+            <React.Fragment key={page._id}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={Link}
+                  to={`planilha/${slug}`}
+                  selected={location.pathname === `planilha/${slug}`}
+                >
+                  <ListItemText primary={page.title} />
+                </ListItemButton>
+              </ListItem>
+
+              {index < array.length - 1 && (
+                <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }} />
+              )}
+            </React.Fragment>
+          )
+        })}
 
         {/* Botão de adicionar planilha (apenas Master vê) */}
         {isMaster && (
@@ -130,7 +125,7 @@ export default function Sidebar({
                       const path = `/planilha/${newPage
                         .toLowerCase()
                         .replace(/\s+/g, "-")}`;
-                      setPaginas((prev) => [...prev, { name: newPage, path }]);
+                      // setPaginas((prev) => [...prev, { name: newPage, path }]);
                       setOpen(false);
                       navigate(path);
                       setNewPage("");

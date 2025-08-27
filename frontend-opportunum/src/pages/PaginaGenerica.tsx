@@ -21,7 +21,7 @@ export default function PaginaGenerica() {
   const isMaster = user?.roles.includes("master");
 
   if (loading) {
-    return null; 
+    return null;
   }
 
   const project = projects.find(
@@ -39,7 +39,7 @@ export default function PaginaGenerica() {
       await deleteProject(project._id);
       await refreshProjects?.();
       alert("Projeto excluído com sucesso!");
-      navigate("/"); 
+      navigate("/");
     } catch (error) {
       console.error(error);
       alert("Erro ao excluir projeto");
@@ -73,7 +73,11 @@ export default function PaginaGenerica() {
 
       <Card>
         <CardContent>
-          <Form />
+          {project ? (
+            <Form project={project} />
+          ) : (
+            <p>Projeto não encontrado.</p>
+          )}
         </CardContent>
       </Card>
 

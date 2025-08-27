@@ -40,3 +40,17 @@ export const deleteProject = async (projectId: string): Promise<void> => {
     throw "Erro desconhecido ao excluir projeto";
   }
 };
+export const updateProject = async (
+  projectId: string,
+  updatedData: Partial<IProject>
+): Promise<IProject> => {
+  try {
+    const res = await api.put(`/projects/${projectId}`, updatedData);
+    return res.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data?.message || "Erro ao atualizar projeto";
+    }
+    throw "Erro desconhecido ao atualizar projeto";
+  }
+};

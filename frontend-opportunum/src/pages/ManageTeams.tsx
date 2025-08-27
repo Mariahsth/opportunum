@@ -130,7 +130,7 @@ export default function ManageTeams() {
             const emEdicao = modoEdicao[membro._id];
             const valores = valoresEditados[membro._id] || {};
             return (
-              <Grid size={{ xs: 12, sm: 6 }} key={membro._id}>
+              <Grid size={{ xs: 12, lg: 6 }} key={membro._id}>
                 <Card>
                   <CardContent
                     sx={{
@@ -212,6 +212,18 @@ export default function ManageTeams() {
                                 )
                               }
                               sx={{ minWidth: 160 }}
+                              renderValue={(selected) => (
+                                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                                  {(selected as string[]).map((value) => {
+                                    const projeto = projects.find((p) => p._id === value);
+                                    return (
+                                      <Typography key={value} variant="body2">
+                                        {projeto?.title || value}
+                                      </Typography>
+                                    );
+                                  })}
+                                </Box>
+                              )}
                             >
                               {projects
                                 .map((project) => (

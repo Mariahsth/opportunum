@@ -54,6 +54,7 @@ export default function DashboardProgress({ andamentoData }: DashboardProps) {
             cx="50%"
             cy="50%"
             outerRadius={isSmall ? 50 : 100} 
+            innerRadius={isSmall ? 30 : 70}
             dataKey="value"
             label={
               isSmall

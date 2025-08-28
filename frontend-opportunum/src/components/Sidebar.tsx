@@ -25,7 +25,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { createProject } from "../services/projectsService";
 
-
 export default function Sidebar({
   mobileOpen,
   handleDrawerToggle,
@@ -39,48 +38,46 @@ export default function Sidebar({
   const isMaster = user?.roles.includes("master");
 
   if (loading) {
-    return null; 
+    return null;
   }
 
-  const handleCreateProject = async (title:string) => {
+  const handleCreateProject = async (title: string) => {
     try {
       const createdProject = await createProject(title);
       await refreshProjects?.();
-      const slug = createdProject.title
-        .toLowerCase()
-        .replace(/\s+/g, "-");
+      const slug = createdProject.title.toLowerCase().replace(/\s+/g, "-");
       setOpen(false);
       navigate(`/planilha/${slug}`);
       setNewPage("");
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const drawerContent = (
     <div>
       <Toolbar />
       <List>
-      
         <ListItem disablePadding>
           <ListItemButton
             component={Link}
             to={"/"}
             selected={location.pathname === "/"}
           >
-            <ListItemText >Meus Projetos</ListItemText>
+            <ListItemText>Meus Projetos</ListItemText>
           </ListItemButton>
         </ListItem>
         <Divider
           sx={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)", mb:3
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            mb: 3,
           }}
         />
-        <Typography sx={{ color: "#ffffff47", m: 1, ml:4 }}>
+        <Typography sx={{ color: "#ffffff47", m: 1, ml: 4 }}>
           Planilhas disponíveis:
         </Typography>
         <Divider
-        variant="middle"
+          variant="middle"
           sx={{
             mb: 3,
             backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -88,7 +85,7 @@ export default function Sidebar({
           }}
         />
         {projects.map((page, index, array) => {
-          const slug = page.title.toLowerCase().replace(/\s+/g, "-"); 
+          const slug = page.title.toLowerCase().replace(/\s+/g, "-");
 
           return (
             <React.Fragment key={page._id}>
@@ -98,7 +95,15 @@ export default function Sidebar({
                   to={`planilha/${slug}`}
                   selected={location.pathname === `planilha/${slug}`}
                 >
-                  <ListItemText primary={page.title} />
+                  <ListItemText
+                    primary={`${page.title}`}
+                    secondary={page.numeroEstrategia}
+                    slotProps={{
+                      secondary: {
+                        sx: { color: 'primary.main', fontWeight:'bold' }, 
+                      },
+                    }}
+                  />
                 </ListItemButton>
               </ListItem>
 
@@ -106,7 +111,7 @@ export default function Sidebar({
                 <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }} />
               )}
             </React.Fragment>
-          )
+          );
         })}
 
         {/* Botão de adicionar planilha (apenas Master vê) */}
@@ -136,9 +141,7 @@ export default function Sidebar({
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={() => setOpen(false)}>Cancelar</Button>
-                  <Button
-                    onClick={() => handleCreateProject(newPage)}
-                  >
+                  <Button onClick={() => handleCreateProject(newPage)}>
                     Salvar
                   </Button>
                 </DialogActions>

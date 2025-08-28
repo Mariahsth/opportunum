@@ -58,7 +58,7 @@ export default function PaginaGenerica() {
         }}
       >
         <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
-          PLANEJAMENTO ESTRATÉGICO{" "}
+          
           {nome?.replace(/-/g, " ").toLocaleUpperCase()}
         </Typography>
         {isMaster && (

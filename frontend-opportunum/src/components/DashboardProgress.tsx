@@ -55,10 +55,17 @@ export default function DashboardProgress({ andamentoData }: DashboardProps) {
             cy="50%"
             outerRadius={isSmall ? 50 : 100} 
             dataKey="value"
-            label={({ name, percent }) =>
-              percent !== undefined
-                ? `${name} (${(percent * 100).toFixed(0)}%)`
-                : name
+            label={
+              isSmall
+                ? ({ percent }) =>
+                  percent !== undefined ?
+                  `${(percent * 100).toFixed(0)}%`
+                  :
+                  false
+                : ({ name, percent }) =>
+                    percent !== undefined
+                      ? `${name} (${(percent * 100).toFixed(0)}%)`
+                      : name
             }
             fontSize={isSmall ? '12px' : '14px'}
           >
@@ -67,7 +74,13 @@ export default function DashboardProgress({ andamentoData }: DashboardProps) {
             ))}
           </Pie>
           <Tooltip />
-          <Legend />
+          <Legend layout={isSmall ? "vertical" : "horizontal"} 
+          align="center"
+          wrapperStyle={{
+            fontSize: isSmall ? "12px" : "14px",
+            maxWidth: "100%",
+            whiteSpace: "pre-wrap",
+          }}/>
         </PieChart>
       </ResponsiveContainer>
     </Box>

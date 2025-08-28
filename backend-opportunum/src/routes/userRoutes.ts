@@ -10,7 +10,7 @@ import { authorizeRoles } from "../middleware/authorizeRoles";
 
 const router = express.Router();
 
-router.get("/users", protect, authorizeRoles("admin", "master"), getAllUsers);
+router.get("/users", protect, getAllUsers);
 router.get("/roles", protect, authorizeRoles("admin", "master"), getAvailableRoles);
 router.put("/users/:id", protect, authorizeRoles("admin", "master"), updateUser);
 router.delete("/users/:id", protect, authorizeRoles("admin", "master"), deleteUser);

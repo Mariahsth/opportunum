@@ -11,7 +11,7 @@ import { authorizeRoles } from "../middleware/authorizeRoles";
 
 const router = express.Router();
 
-router.get("/", protect, authorizeRoles( "master"), getAllProjects);
+router.get("/", protect, getAllProjects);
 router.get("/:id", protect, getProjectById);
 router.post("/", protect, authorizeRoles( "master", "admin"), createProject);
 router.put("/:id", protect, authorizeRoles( "master", "admin"), updateProject);

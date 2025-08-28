@@ -29,7 +29,7 @@ interface FormProps {
 export default function Form({ project }: FormProps) {
     const [loading, setLoading] = useState(false);
     const [salvo, setSalvo] = useState(true);
-    const { refreshProjects } = useAuth();
+    const { refreshProjects, user } = useAuth();
     const [formData, setFormData] = useState({
       perspectiva: "",
       numeroEstrategia: "",
@@ -40,6 +40,10 @@ export default function Form({ project }: FormProps) {
       prazo: "",
       responsavel: "",
     });
+    const isMaster = user?.roles.includes("master");
+    const isAdmin = user?.roles.includes("admin");
+
+
     useEffect(() => {
       setFormData({
         perspectiva: project.perspectiva || "",
@@ -105,30 +109,34 @@ export default function Form({ project }: FormProps) {
           </Grid>
         ))}
       </Grid>
-      <Box sx={{display:'flex', gap:2}}>
-        <Button
-            loading={loading}
-            loadingPosition="start"
-            startIcon={<SaveIcon />}
-            variant="contained"
-            color="success"
-            sx={{mt:2}}
-            onClick={() => handleSave()}
-            >
-            Salvar
-            </Button>
-        <Button
-            loading={loading}
-            loadingPosition="start"
-            startIcon={<EditIcon />}
-            variant="contained"
-            sx={{mt:2}}
-            onClick={() => handleEdit()}
-            >
-            Editar
-            </Button>
+      {(isMaster || isAdmin) && (
+        <Box sx={{display:'flex', gap:2}}>
+          <Button
+              loading={loading}
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              variant="contained"
+              color="success"
+              sx={{mt:2}}
+              onClick={() => handleSave()}
+              >
+              Salvar
+              </Button>
+          <Button
+              loading={loading}
+              loadingPosition="start"
+              startIcon={<EditIcon />}
+              variant="contained"
+              sx={{mt:2}}
+              onClick={() => handleEdit()}
+              >
+              Editar
+              </Button>
 
-      </Box>
+        </Box>
+
+
+      )}
     </>
   );
 }

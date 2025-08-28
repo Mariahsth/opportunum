@@ -1,12 +1,31 @@
+import { IUser } from "../interface/User";
 import { Project } from "../models/Projects";
 import { Request, Response } from "express";
+import { AuthenticatedRequest } from "../types/express";
 
-export const getAllProjects = async (req:Request, res:Response) => {
+export const getAllProjects = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const projects = await Project.find();
-    res.json(projects);
-  } catch (error) {
-    res.status(500).json({ error: "Erro ao buscar projetos" });
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+    if (user.roles.includes("master")) {
+      const allProjects = await Project.find();
+      return res.json(allProjects);
+    }
+
+    if (!user.projects || user.projects.length === 0) {
+      return res.json([]); 
+    }
+
+    const userProjects = await Project.find({
+      _id: { $in: user.projects },
+    });
+
+    res.json(userProjects);
+  } catch (err) {
+    console.error("Erro ao buscar projetos:", err);
+    res.status(500).json({ message: "Erro ao buscar projetos" });
   }
 };
 

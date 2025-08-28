@@ -40,7 +40,9 @@ export default function TableRowItem({
     "acoes",
   ];
 
-  const { users } = useAuth();
+  const { users, user } = useAuth();
+  const isMaster = user?.roles.includes("master");
+  const isAdmin = user?.roles.includes("admin");
 
   const responsibleUsers = useMemo(() => {
     if (!row.projectId) return [];
@@ -89,13 +91,15 @@ export default function TableRowItem({
                   >
                     <EditIcon fontSize="small" />
                   </IconButton>
-                  <IconButton
-                    aria-label="excluir"
-                    size="small"
-                    onClick={() => onDelete(index)}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
+                  {(isMaster || isAdmin) && (
+                    <IconButton
+                      aria-label="excluir"
+                      size="small"
+                      onClick={() => onDelete(index)}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  )}
                 </>
               )}
             </TableCell>

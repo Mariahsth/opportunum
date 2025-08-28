@@ -58,18 +58,25 @@ export default function DashboardDeadline({ atividades }: DashboardDeadlineProps
       <Typography variant="h6" align="center" sx={{ mb: 2 }}>
         Prazo das Atividades Pendentes
       </Typography>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart margin={{ bottom: 50 }}>
+      <ResponsiveContainer width="100%" height={isSmall ? 250 : 400}>
+        <PieChart margin={{ bottom: 50}} >
           <Pie
             data={chartData}
             cx="50%"
             cy="50%"
             outerRadius={isSmall ? 50 : 100}
             dataKey="value"
-            label={({ name, percent }) =>
-              percent !== undefined
-                ? `${name} (${(percent * 100).toFixed(0)}%)`
-                : name
+            label={
+              isSmall
+                ? ({ percent }) =>
+                  percent !== undefined ?
+                  `${(percent * 100).toFixed(0)}%`
+                  :
+                  false
+                : ({ name, percent }) =>
+                    percent !== undefined
+                      ? `${name} (${(percent * 100).toFixed(0)}%)`
+                      : name
             }
             fontSize={isSmall ? '12px' : '14px'}
           >
@@ -78,7 +85,13 @@ export default function DashboardDeadline({ atividades }: DashboardDeadlineProps
             ))}
           </Pie>
           <Tooltip />
-          <Legend />
+          <Legend layout={isSmall ? "vertical" : "horizontal"} 
+          align="center"
+          wrapperStyle={{
+            fontSize: isSmall ? "12px" : "14px",
+            maxWidth: "100%",
+            whiteSpace: "pre-wrap",
+          }}/>
         </PieChart>
       </ResponsiveContainer>
     </Box>

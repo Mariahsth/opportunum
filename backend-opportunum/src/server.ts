@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes';
 import projectRoutes from './routes/projectsRoutes';
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes";
+import taskRoutes from './routes/taskRoutes';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use("/api", userRoutes);
 app.use("/api/projects", projectRoutes);
+app.use('/api/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 5000;
 

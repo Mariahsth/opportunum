@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import Form from "../components/Form";
-import CustomTable from "../components/CustomTable";
+import CustomTable from "../components/CustomTable/CustomTable";
 import { Trash2 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { deleteProject } from "../services/projectsService";
@@ -83,7 +83,7 @@ export default function PaginaGenerica() {
 
       <Card sx={{ mt: 2 }}>
         <CardContent>
-          <CustomTable />
+          <CustomTable projectId={project?._id}/>
         </CardContent>
       </Card>
     </Box>

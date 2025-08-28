@@ -1,7 +1,10 @@
 export interface RowData {
+  _id?: string;
   prazo: string;
   kr: string;
   resultado: string;
-  responsavel: string;
-  andamento: "Não iniciado" | "Em andamento" | "Finalizado" | "";
-};
+  responsavel: string; 
+  responsavelIds?: string[]; 
+  andamento: 'pendente' | 'em andamento' | 'concluído' | '';
+  projectId: string;
+}

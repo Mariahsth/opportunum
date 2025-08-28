@@ -7,15 +7,15 @@ type DashboardProps = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  "Finalizado": "#4caf50",     
-  "Em andamento": "#ff9800",  
-  "Não iniciado": "#f44336",   
+  "concluído": "#4caf50",     
+  "em andamento": "#ff9800",  
+  "pendente": "#f44336",   
 };
 
 const andamentoLabels: Record<string, string> = {
-  "Finalizado": "Concluídas",
-  "Em andamento": "Em andamento",
-  "Não iniciado": "Não iniciadas",
+  "concluído": "Concluído",
+  "em andamento": "Em andamento",
+  "pendente": "Não iniciadas",
 };
 
 export default function DashboardProgress({ andamentoData }: DashboardProps) {

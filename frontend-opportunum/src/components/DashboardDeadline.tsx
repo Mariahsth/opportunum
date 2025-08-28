@@ -22,7 +22,7 @@ export default function DashboardDeadline({ atividades }: DashboardDeadlineProps
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   const pendentes = atividades.filter(
-    (a) => a.status === "Em andamento" || a.status === "Não iniciado"
+    (a) => a.status === "em andamento" || a.status === "pendente"
   );
 
   if (pendentes.length === 0) return null;

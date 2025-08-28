@@ -185,6 +185,9 @@ export default function TableRowItem({
                 </FormControl>
               ) : (
                 <TextField
+                sx={{
+                  ...(col === "kr" && { minWidth: 120  })
+                }}
                   fullWidth={col === "resultado"}
                   size="small"
                   multiline={col === "resultado"}

@@ -36,12 +36,12 @@ export default function Home() {
     },
     {}
   );
-
+  
   useEffect(() => {
     async function loadAllTasks() {
       if (!projects.length) return;
       setLoadingTasks(true);
-
+      
       try {
         const tasksMap: Record<string, ITask[]> = {};
         for (const proj of projects) {
@@ -64,6 +64,18 @@ export default function Home() {
     return Object.values(tasksByProject).flat();
   }, [tasksByProject]);
 
+  const andamentoUser = allTasks.reduce<Record<string, number>>((acc, task) => {
+    const isUserTask = task.responsaveis.some((resp) =>
+      typeof resp === "string" ? resp === user?._id : resp._id === user?._id
+    );
+  
+    if (isUserTask) {
+      acc[task.status] = (acc[task.status] || 0) + 1;
+    }
+  
+    return acc;
+  }, {});
+  
   if (loading || loadingTasks) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
@@ -140,7 +152,12 @@ export default function Home() {
             }}
           >
             <Typography variant="h6" align="center" sx={{ mb: 2 }}>
-              Visão Geral de Todas as Atividades
+              {" "}
+              Resumo Geral das Suas Atividades{" "}
+            </Typography>{" "}
+            <DashboardOverallBar andamentoGeral={andamentoUser} />
+            <Typography variant="h6" align="center" sx={{ mb: 2 }}>
+              Resumo Geral dos Seus Projetos
             </Typography>
             <DashboardOverallBar andamentoGeral={andamentoGeral} />
           </CardContent>

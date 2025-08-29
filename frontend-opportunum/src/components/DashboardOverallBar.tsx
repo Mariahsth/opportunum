@@ -20,7 +20,7 @@ export default function DashboardOverallBar({
   andamentoGeral,
 }: DashboardOverallBarProps) {
   const data = Object.entries(andamentoGeral).map(([status, count]) => ({
-    status,
+    status: status === "pendente" ? "Não iniciado" : status === "em andamento" ? "Em andamento" : "Concluído",
     count,
   }));
 
@@ -29,9 +29,9 @@ export default function DashboardOverallBar({
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   const colors: Record<string, string> = {
-    concluído: "#4caf50",
-    "em andamento": "#ff9800",
-    pendente: "#f44336",
+    Concluído: "#4caf50",
+    "Em andamento": "#ff9800",
+    "Não iniciado": "#f44336",
   };
 
   return (

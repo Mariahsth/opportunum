@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+
+
 export const formatDateForDisplay = (dateString: string) => {
     if (!dateString) return "-";
   
@@ -16,3 +19,17 @@ export const formatDateForDisplay = (dateString: string) => {
     const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
     return localDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
   };
+
+  export function formatPrazoDate(dateString?: string | Date | null): string {
+    if (!dateString) return "—";
+  
+    const date =
+      typeof dateString === "string" ? new Date(dateString) : dateString;
+  
+    if (!(date instanceof Date) || isNaN(date.getTime())) return "—";
+  
+    // Corrige o timezone para o horário local
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  
+    return format(localDate, "dd/MM/yyyy");
+  }

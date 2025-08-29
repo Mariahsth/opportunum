@@ -17,6 +17,7 @@ import { fetchTasksByProject } from "../services/taskService";
 import type { ITask } from "../interface/Task";
 import { Link } from "react-router-dom";
 import DashboardOverallBar from "../components/DashboardOverallBar";
+import UserTasksTable from "../components/UserTaskTable";
 
 export default function Home() {
   const { user, loading, projects } = useAuth();
@@ -84,16 +85,45 @@ export default function Home() {
           <Typography sx={{ fontSize: "2rem", mb: 2 }}>
             Olá, {user?.name}
           </Typography>
-          <Typography>
-            Você está envolvido(a) em {projects.length} projetos:
-          </Typography>
-          <List>
-            {projects.map((project) => (
-              <ListItem key={project._id} sx={{ color: "primary.main", p: 0 }}>
-                {project.title}
-              </ListItem>
-            ))}
-          </List>
+          <Box>
+            <List>
+              {projects.length > 0 ? (
+                <Typography>
+                  Você está envolvido(a) em {projects.length} projetos:
+                </Typography>
+              ) : (
+                <Typography>
+                  Você ainda não está envolvido(a) em nenhum projeto
+                </Typography>
+              )}
+
+              {projects.map((project) => {
+                const slug = project.title.toLowerCase().replace(/\s+/g, "-");
+                return (
+                  <ListItem
+                    component={Link}
+                    to={`planilha/${slug}`}
+                    key={project._id}
+                    sx={{
+                      color: "primary.main",
+                      p: 0,
+                      "&:hover": { color: "text.primary" },
+                    }}
+                  >
+                    {project.title}
+                  </ListItem>
+                );
+              })}
+            </List>
+            <Typography sx={{ mt: 5, fontSize: "1.5rem" }}>
+              Suas atividades pendentes:
+            </Typography>
+            <UserTasksTable
+              allTasks={allTasks}
+              projects={projects}
+              tasksByProject={tasksByProject}
+            />
+          </Box>
         </CardContent>
       </Card>
 

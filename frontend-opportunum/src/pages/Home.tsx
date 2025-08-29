@@ -75,7 +75,7 @@ export default function Home() {
   
     return acc;
   }, {});
-  
+
   if (loading || loadingTasks) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
@@ -117,9 +117,10 @@ export default function Home() {
                     to={`planilha/${slug}`}
                     key={project._id}
                     sx={{
-                      color: "primary.main",
+                      color: "var(--color-drawer-bg-desktop)",
+                      fontWeight:"bold",
                       p: 0,
-                      "&:hover": { color: "text.primary" },
+                      "&:hover": { color: "primary.main" },
                     }}
                   >
                     {project.title}

@@ -95,11 +95,15 @@ export default function Home() {
       <Card>
         <CardContent>
           <Typography sx={{ fontSize: "2rem", mb: 2 }}>
-            Olá, {user?.name}
+            Bem-vindo(a), {user?.name}
           </Typography>
           <Box>
             <List>
+            <Typography sx={{ mb: 3, fontSize: "1.5rem" }}>
+              Seus projetos:
+            </Typography>
               {projects.length > 0 ? (
+                
                 <Typography>
                   Você está envolvido(a) em {projects.length} projetos:
                 </Typography>
@@ -157,10 +161,18 @@ export default function Home() {
               Resumo Geral das Suas Atividades{" "}
             </Typography>{" "}
             <DashboardOverallBar andamentoGeral={andamentoUser} />
+            
+          </CardContent>
+        </Card>
+      )}
+      {projects.length > 0 && (
+        <Card sx={{my:5}}>
+          <CardContent>
             <Typography variant="h6" align="center" sx={{ mb: 2 }}>
-              Resumo Geral dos Seus Projetos
-            </Typography>
-            <DashboardOverallBar andamentoGeral={andamentoGeral} />
+            Resumo Geral dos Seus Projetos
+          </Typography>
+          <DashboardOverallBar andamentoGeral={andamentoGeral} />
+
           </CardContent>
         </Card>
       )}

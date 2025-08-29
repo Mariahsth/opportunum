@@ -11,9 +11,14 @@ import taskRoutes from './routes/taskRoutes';
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",            
+  "https://opportunum.vercel.app",   
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', 
-  credentials: true 
+  origin: allowedOrigins,
+  credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());

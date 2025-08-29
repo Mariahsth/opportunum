@@ -5,9 +5,18 @@
 Um sistema web full-stack para **gestão de projetos e acompanhamento de OKRs (Objectives and Key Results)**.  
 Permite cadastrar projetos, gerenciar tarefas e visualizar **painéis de progresso** com gráficos dinâmicos, ajudando equipes a acompanharem metas de forma simples e intuitiva.
 
-![Dashboard Preview](./frontend-opportunum/public/dashboard-preview.png)
+![Dashboard Preview](./frontend-opportunum/public/dashboard-preview.PNG)
 
 ---
+## 🔗 Acesso Rápido
+
+🔹 **Link de acesso:** [https://opportunum.vercel.app/](https://opportunum.vercel.app/)  
+🔹 **Login para teste:**  
+```bash
+Email: admin@opportunum.com
+Senha: Senha@123
+```
+
 
 ## 🚀 Funcionalidades
 

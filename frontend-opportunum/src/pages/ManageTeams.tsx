@@ -34,6 +34,7 @@ export default function ManageTeams() {
   const [valoresEditados, setValoresEditados] = useState<
     Record<string, Partial<User>>
   >({});
+  const isMaster = user?.roles?.includes("master");
 
   const handleSave = async (id: string) => {
     setModoEdicao((prev) => ({ ...prev, [id]: false }));
@@ -116,9 +117,11 @@ export default function ManageTeams() {
       <Card>
         <CardContent>
           <Typography>Olá, {user?.name}</Typography>
-          <Typography>
-            Seu perfil é {user?.roles}
-          </Typography>
+          <Box sx={{display:'flex', gap:'0.5rem'}}>
+            <Typography>Seu perfil é:  </Typography>
+            <Typography sx={{color:'primary.main'}}> {user?.roles}</Typography>
+
+          </Box>
           <Typography>
             Você tem {equipe.filter((m) => m._id !== user?._id).length} membros
             na sua equipe
@@ -127,41 +130,42 @@ export default function ManageTeams() {
       </Card>
 
       <Grid container spacing={2} sx={{ mt: 3 }}>
-        {equipe
-          .filter((membro) => membro._id !== user?._id)
-          .map((membro) => {
-            const emEdicao = modoEdicao[membro._id];
-            const valores = valoresEditados[membro._id] || {};
-            return (
-              <Grid size={{ xs: 12, lg: 6 }} key={membro._id}>
-                <Card>
-                  <CardContent
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Box>
-                      <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Typography>Nome: </Typography>
-                        <Typography>{membro.name}</Typography>
-                      </Box>
+        {equipe.map((membro) => {
+          const emEdicao = modoEdicao[membro._id];
+          const valores = valoresEditados[membro._id] || {};
+          return (
+            <Grid size={{ xs: 12, lg: 6 }} key={membro._id}>
+              <Card sx={{ height: "100%" }}>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "1rem",
+                  }}
+                >
+                  <Box>
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                      <Typography>Nome: </Typography>
+                      <Typography>
+                        {membro.name} {membro._id === user?._id && "(você)"}
+                      </Typography>
+                    </Box>
 
-                      <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Typography>Email:</Typography>
-                        <Typography>{membro.email}</Typography>
-                      </Box>
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                      <Typography>Email:</Typography>
+                      <Typography>{membro.email}</Typography>
+                    </Box>
 
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "1rem",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography>Tipo de acesso:</Typography>
-                        {emEdicao ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography>Tipo de acesso:</Typography>
+                      {emEdicao ? (
+                        isMaster ? (
                           <FormControl size="small">
                             <Select
                               value={valores.roles?.[0] || ""}
@@ -186,135 +190,144 @@ export default function ManageTeams() {
                               ? membro.roles.join(", ")
                               : membro.roles}
                           </Typography>
-                        )}
-                      </Box>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "1rem",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography>Projetos:</Typography>
-                        {emEdicao ? (
-                          <FormControl size="small">
-                            <Select
-                              multiple
-                              value={
-                                (valores.projects?.map(
-                                  (proj: IProject | string) =>
-                                    typeof proj === "string" ? proj : proj._id
-                                ) as string[]) || []
-                              }
-                              onChange={(e) =>
-                                handleChange(
-                                  membro._id,
-                                  "projects",
-                                  e.target.value as string[]
-                                )
-                              }
-                              sx={{ minWidth: 160 }}
-                              renderValue={(selected) => (
-                                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-                                  {(selected as string[]).map((value) => {
-                                    const projeto = projects.find((p) => p._id === value);
-                                    return (
-                                      <Typography key={value} variant="body2">
-                                        {projeto?.title || value}
-                                      </Typography>
-                                    );
-                                  })}
-                                </Box>
-                              )}
-                            >
-                              {projects
-                                .map((project) => (
-                                  <MenuItem
-                                    key={project._id}
-                                    value={project._id}
-                                  >
-                                    {project.title}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        ) : (
-                          <Typography>
-                            {(membro.projects || [])
-                              .map((proj: string | IProject) => {
-                                const id =
-                                  typeof proj === "string" ? proj : proj._id;
-                                const found = projects.find(
-                                  (p) => p._id === id
-                                );
-                                return found?.title;
-                              })
-                              .filter(Boolean)
-                              .join(", ")}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      {emEdicao ? (
-                        <>
-                          <Button
-                            loading={loading}
-                            loadingPosition="start"
-                            startIcon={<SaveIcon />}
-                            variant="contained"
-                            color="success"
-                            onClick={() => handleSave(membro._id)}
-                          >
-                            Salvar
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="warning"
-                            startIcon={<Ban />}
-                            sx={{ mt: 2 }}
-                            onClick={() =>
-                              setModoEdicao((prev) => ({
-                                ...prev,
-                                [membro._id]: false,
-                              }))
-                            }
-                          >
-                            Cancelar
-                          </Button>
-                        </>
+                        )
                       ) : (
-                        <>
-                          <Button
-                            loading={loading}
-                            loadingPosition="start"
-                            startIcon={<EditIcon />}
-                            variant="contained"
-                            onClick={() => handleEdit(membro._id)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            loading={loading}
-                            loadingPosition="start"
-                            startIcon={<Trash />}
-                            variant="contained"
-                            color="error"
-                            sx={{ mt: 2 }}
-                            onClick={() => handleDelete(membro._id)}
-                          >
-                            Deletar
-                          </Button>
-                        </>
+                        <Typography>
+                          {Array.isArray(membro.roles)
+                            ? membro.roles.join(", ")
+                            : membro.roles}
+                        </Typography>
                       )}
                     </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography>Projetos:</Typography>
+                      {emEdicao ? (
+                        <FormControl size="small">
+                          <Select
+                            multiple
+                            value={
+                              (valores.projects?.map(
+                                (proj: IProject | string) =>
+                                  typeof proj === "string" ? proj : proj._id
+                              ) as string[]) || []
+                            }
+                            onChange={(e) =>
+                              handleChange(
+                                membro._id,
+                                "projects",
+                                e.target.value as string[]
+                              )
+                            }
+                            sx={{ minWidth: 160 }}
+                            renderValue={(selected) => (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: 0.5,
+                                }}
+                              >
+                                {(selected as string[]).map((value) => {
+                                  const projeto = projects.find(
+                                    (p) => p._id === value
+                                  );
+                                  return (
+                                    <Typography key={value} variant="body2">
+                                      {projeto?.title || value}
+                                    </Typography>
+                                  );
+                                })}
+                              </Box>
+                            )}
+                          >
+                            {projects.map((project) => (
+                              <MenuItem key={project._id} value={project._id}>
+                                {project.title}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      ) : (
+                        <Typography>
+                          {(membro.projects || [])
+                            .map((proj: string | IProject) => {
+                              const id =
+                                typeof proj === "string" ? proj : proj._id;
+                              const found = projects.find((p) => p._id === id);
+                              return found?.title;
+                            })
+                            .filter(Boolean)
+                            .join(", ")}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    {emEdicao ? (
+                      <>
+                        <Button
+                          loading={loading}
+                          loadingPosition="start"
+                          startIcon={<SaveIcon />}
+                          variant="contained"
+                          color="success"
+                          onClick={() => handleSave(membro._id)}
+                        >
+                          Salvar
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="warning"
+                          startIcon={<Ban />}
+                          sx={{ mt: 2 }}
+                          onClick={() =>
+                            setModoEdicao((prev) => ({
+                              ...prev,
+                              [membro._id]: false,
+                            }))
+                          }
+                        >
+                          Cancelar
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          loading={loading}
+                          loadingPosition="start"
+                          startIcon={<EditIcon />}
+                          variant="contained"
+                          onClick={() => handleEdit(membro._id)}
+                        >
+                          Editar
+                        </Button>
+                        <Button
+                          loading={loading}
+                          loadingPosition="start"
+                          startIcon={<Trash />}
+                          variant="contained"
+                          color="error"
+                          sx={{ mt: 2 }}
+                          onClick={() => handleDelete(membro._id)}
+                        >
+                          Deletar
+                        </Button>
+                      </>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

@@ -185,13 +185,15 @@ export default function Home() {
 
           return (
             <Grid size={{ xs: 12, sm: 6 }} key={projeto._id}>
-              <Card>
+              <Card sx={{height:'100%'}}>
                 <CardContent
                   component={Link}
                   to={`planilha/${slug}`}
                   sx={{
                     display: "flex",
                     flexDirection: "column",
+                    justifyContent:'center',
+                    height:'100%',
                     alignItems: "center",
                     textDecoration: "none",
                     color: "text.primary",
@@ -215,7 +217,17 @@ export default function Home() {
                   >
                     {projeto.title}
                   </Typography>
-                  <DashboardProgress andamentoData={andamentoData} />
+                  {projectTasks.length > 0 
+                  ? 
+                  (
+                    <DashboardProgress andamentoData={andamentoData} />
+
+                  )
+                  :
+                  (
+                    <Typography sx={{mt:5, textAlign:'center'}}>Esse projeto ainda não possui atividades cadastradas</Typography>
+                  )
+                }
                 </CardContent>
               </Card>
             </Grid>

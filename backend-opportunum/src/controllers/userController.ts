@@ -1,10 +1,27 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
+import { AuthenticatedRequest } from "../types/express";
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const users = await User.find({}, "-password").populate("projects", "_id title");
-    res.status(200).json({ users });
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+    if(user.roles.includes("master")){
+      const allUsers = await User.find({}, "-password").populate("projects", "_id title");
+      return res.status(200).json({users : allUsers});
+    }  
+    if (user.roles.includes("admin")) {
+      const admin = await User.findById(user._id).select("projects");
+      const adminProjects = admin?.projects || [];
+      const teamUsers = await User.find({
+        projects: { $in: adminProjects },
+      }).populate("projects", "_id title");
+
+      return res.status(200).json({ users: teamUsers });
+    }
+    return res.status(403).json({ message: "Acesso negado" });
   } catch (error) {
     res.status(500).json({ message: "Erro ao buscar usuários" });
   }

@@ -117,6 +117,9 @@ export default function ManageTeams() {
         <CardContent>
           <Typography>Olá, {user?.name}</Typography>
           <Typography>
+            Seu perfil é {user?.roles}
+          </Typography>
+          <Typography>
             Você tem {equipe.filter((m) => m._id !== user?._id).length} membros
             na sua equipe
           </Typography>

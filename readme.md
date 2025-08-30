@@ -41,7 +41,8 @@ O sistema possui **gestão de papéis (roles)**, permitindo controlar o que cada
 | **Assistente** | Tem acesso de visualização aos projetos e tarefas nos quais está envolvido. Pode atualizar tarefas dos projetos que está envolvido. |
 
 🔐 **Gerenciamento de Acessos:**  
-- Apenas **Master** pode promover ou rebaixar usuários entre os papéis.  
+- Apenas **Master** pode promover ou rebaixar todos os usuários entre os papéis.  
+- Usuário de perfil **Admin** pode promover ou rebaixar apenas os usuários da sua equipe (que estão envolvidos nos mesmos projetos).  
 - Usuários podem ser **adicionados/removidos de projetos específicos** para garantir que apenas pessoas relevantes tenham acesso.  
 - Controle feito via **painel administrativo** no sistema.
 

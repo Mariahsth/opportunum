@@ -7,6 +7,11 @@ const projectSchema = new Schema<IProject>({
     required: true,
     trim: true
   },
+  municipio: {          
+    type: String,
+    required: true,
+    trim: true
+  },
   perspectiva: {
     type: String,
     trim: true

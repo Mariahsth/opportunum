@@ -1,6 +1,7 @@
 export interface IProject {
     _id: string;
     title: string;
+    municipio:string;
     perspectiva: string;
     numeroEstrategia: string;
     resultadoChave: string;

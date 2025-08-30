@@ -13,13 +13,13 @@ export const fetchProjects = async (): Promise<IProject[]> => {
     throw "Erro desconhecido ao buscar projetos";
   }
 };
-export const createProject = async (
-  title: string
+export const createProject = async (projectData:
+  {title: string, municipio?: string}
 ): Promise<IProject> => {
   try {
     const res = await api.post(
       "/projects",
-      { title },
+      projectData,
     );
     return res.data;
   } catch (error: unknown) {

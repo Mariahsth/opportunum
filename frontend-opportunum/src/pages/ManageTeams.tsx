@@ -116,7 +116,7 @@ export default function ManageTeams() {
 
       <Card>
         <CardContent>
-          <Typography>Olá, {user?.name}</Typography>
+          <Typography sx={{fontSize:'2rem', mb:2}}>Olá, {user?.name}</Typography>
           <Box sx={{display:'flex', gap:'0.5rem'}}>
             <Typography>Seu perfil é:  </Typography>
             <Typography sx={{color:'primary.main'}}> {user?.roles}</Typography>

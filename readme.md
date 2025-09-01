@@ -1,12 +1,12 @@
 # 📊 OKR Dashboard - Planejamento Estratégico
 
-![preview site](./frontend-opportunum/public/opportunum.PNG)
-
+![preview site - indicadores](./frontend-opportunum/public/opportunum.PNG)
+![preview site - planilha](project.PNG)
 Um sistema web full-stack para **gestão de projetos e acompanhamento de OKRs (Objectives and Key Results)**.  
 Permite cadastrar projetos, gerenciar tarefas e visualizar **painéis de progresso** com gráficos dinâmicos, ajudando equipes a acompanharem metas de forma simples e intuitiva.
+![Dashboards individuais](home2.PNG)
 
-![Dashboard Preview](./frontend-opportunum/public/dashboard-preview.PNG)
-
+![Dashboards de projetos](home3.PNG)
 ---
 ## 🔗 Acesso Rápido
 
@@ -40,11 +40,15 @@ O sistema possui **gestão de papéis (roles)**, permitindo controlar o que cada
 | **Admin**      | Pode gerenciar (criar e editar) projetos e tarefas que está envolvido, adicionar membros aos projetos e acompanhar OKRs. |
 | **Assistente** | Tem acesso de visualização aos projetos e tarefas nos quais está envolvido. Pode atualizar tarefas dos projetos que está envolvido. |
 
+![Login preview](login.PNG)
+
 🔐 **Gerenciamento de Acessos:**  
 - Apenas **Master** pode promover ou rebaixar todos os usuários entre os papéis.  
 - Usuário de perfil **Admin** pode promover ou rebaixar apenas os usuários da sua equipe (que estão envolvidos nos mesmos projetos).  
 - Usuários podem ser **adicionados/removidos de projetos específicos** para garantir que apenas pessoas relevantes tenham acesso.  
 - Controle feito via **painel administrativo** no sistema.
+
+![Painel de gerenciamento de times](manageTeams.PNG)
 
 ---
 ## 🛠️ Tecnologias Utilizadas
@@ -100,6 +104,6 @@ Frontend:
 VITE_API_URL=http://localhost:5000/api
 ```
 
-✨ Autor
+## ✨ Autora
 
 Desenvolvido por Mariah Hoffmann 💻

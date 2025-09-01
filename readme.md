@@ -1,4 +1,4 @@
-# 📊 OKR Dashboard - Planejamento Estratégico
+# 📊 OKRs de Planejamento Estratégico - Opportunum
 
 ![preview site - indicadores](./frontend-opportunum/public/opportunum.PNG)
 ![preview site - planilha](project.PNG)

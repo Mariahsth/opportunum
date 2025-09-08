@@ -44,6 +44,8 @@ export default function ManageTeams() {
         )
       );
 
+
+
   const handleSave = async (id: string) => {
     setModoEdicao((prev) => ({ ...prev, [id]: false }));
     const dadosAtualizados = valoresEditados[id];
@@ -145,6 +147,11 @@ export default function ManageTeams() {
         {equipe.map((membro) => {
           const emEdicao = modoEdicao[membro._id];
           const valores = valoresEditados[membro._id] || {};
+          const podeEditar =
+          isMaster ||
+          (user?.roles.includes("admin") &&
+            membro.roles.includes("assistant") &&
+            membro._id !== user?._id);
           return (
             <Grid size={{ xs: 12, lg: 6 }} key={membro._id}>
               <Card sx={{ height: "100%" }}>
@@ -259,7 +266,7 @@ export default function ManageTeams() {
                                       (p) => p._id === value
                                     )
                                   )
-                                  .filter(Boolean) 
+                                  .filter(Boolean)
                                   .map((projeto) => (
                                     <Typography
                                       key={projeto!._id}
@@ -299,57 +306,59 @@ export default function ManageTeams() {
                   </Box>
 
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    {emEdicao ? (
-                      <>
-                        <Button
-                          loading={loading}
-                          loadingPosition="start"
-                          startIcon={<SaveIcon />}
-                          variant="contained"
-                          color="success"
-                          onClick={() => handleSave(membro._id)}
-                        >
-                          Salvar
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="warning"
-                          startIcon={<Ban />}
-                          sx={{ mt: 2 }}
-                          onClick={() =>
-                            setModoEdicao((prev) => ({
-                              ...prev,
-                              [membro._id]: false,
-                            }))
-                          }
-                        >
-                          Cancelar
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          loading={loading}
-                          loadingPosition="start"
-                          startIcon={<EditIcon />}
-                          variant="contained"
-                          onClick={() => handleEdit(membro._id)}
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          loading={loading}
-                          loadingPosition="start"
-                          startIcon={<Trash />}
-                          variant="contained"
-                          color="error"
-                          sx={{ mt: 2 }}
-                          onClick={() => handleDelete(membro._id)}
-                        >
-                          Deletar
-                        </Button>
-                      </>
-                    )}
+                    {podeEditar ? (
+                      emEdicao ? (
+                        <>
+                          <Button
+                            loading={loading}
+                            loadingPosition="start"
+                            startIcon={<SaveIcon />}
+                            variant="contained"
+                            color="success"
+                            onClick={() => handleSave(membro._id)}
+                          >
+                            Salvar
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="warning"
+                            startIcon={<Ban />}
+                            sx={{ mt: 2 }}
+                            onClick={() =>
+                              setModoEdicao((prev) => ({
+                                ...prev,
+                                [membro._id]: false,
+                              }))
+                            }
+                          >
+                            Cancelar
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            loading={loading}
+                            loadingPosition="start"
+                            startIcon={<EditIcon />}
+                            variant="contained"
+                            onClick={() => handleEdit(membro._id)}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            loading={loading}
+                            loadingPosition="start"
+                            startIcon={<Trash />}
+                            variant="contained"
+                            color="error"
+                            sx={{ mt: 2 }}
+                            onClick={() => handleDelete(membro._id)}
+                          >
+                            Deletar
+                          </Button>
+                        </>
+                      )
+                    ) : null}
                   </Box>
                 </CardContent>
               </Card>

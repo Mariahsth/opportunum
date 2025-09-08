@@ -7,12 +7,11 @@ import {
   TableBody,
   Paper,
 } from "@mui/material";
-import { isBefore } from "date-fns";
 import type { ITask } from "../interface/Task";
 import type { IProject } from "../interface/Project";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { formatPrazoDate } from "../utils/formatDate";
+import { formatDateToDisplay, isDateAtrasada } from "../utils/formatDate";
 
 interface UserTasksTableProps {
   allTasks: ITask[];
@@ -71,19 +70,7 @@ export default function UserTasksTable({
   
               const slug = project.title.toLowerCase().replace(/\s+/g, "-");
   
-              const rawPrazoDate =
-                typeof task.prazo === "string"
-                  ? new Date(task.prazo)
-                  : task.prazo ?? null;
-  
-              const isAtrasado =
-                rawPrazoDate &&
-                isBefore(
-                  new Date(
-                    rawPrazoDate.getTime() - rawPrazoDate.getTimezoneOffset() * 60000
-                  ),
-                  new Date()
-                );
+              const isAtrasado = isDateAtrasada(task.prazo, task.status);
   
               return (
                 <TableRow
@@ -101,7 +88,7 @@ export default function UserTasksTable({
                 >
                   <TableCell>{project.title}</TableCell>
                   <TableCell>{task.resultados}</TableCell>
-                  <TableCell>{formatPrazoDate(task.prazo)}</TableCell>
+                  <TableCell>{formatDateToDisplay(task.prazo)}</TableCell>
                   <TableCell
                     sx={{
                       color: isAtrasado ? "error.main" : "success.main",

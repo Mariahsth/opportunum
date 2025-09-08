@@ -13,7 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import { formatDateForDisplay, isDateAtrasada } from "../../utils/formatDate";
+import { formatDateFromInput, isDateAtrasada } from "../../utils/formatDate";
 import type { TableRowItemProps } from "./types";
 import { useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth";
@@ -212,7 +212,7 @@ export default function TableRowItem({
                   : "inherit",
               }}
             >
-              {formatDateForDisplay(String(value ?? ""))}
+              {formatDateFromInput(String(value ?? ""))}
             </Box>
             ) : col === "andamento" ? (
               value ? (

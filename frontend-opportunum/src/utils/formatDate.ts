@@ -1,12 +1,10 @@
 import { format } from "date-fns";
 
 
-export const formatDateForDisplay = (dateString: string) => {
+export const formatDateFromInput = (dateString: string) => {
     if (!dateString) return "-";
-  
     const [year, month, day] = dateString.split("-");
     if (!year || !month || !day) return "-";
-  
     return `${day}/${month}/${year}`;
   };
   
@@ -14,32 +12,36 @@ export const formatDateForDisplay = (dateString: string) => {
   export const formatDateForInput = (dateString?: string | null): string => {
     if (!dateString) return "";
     const date = new Date(dateString);
-  
     // Corrige o timezone para evitar erro de -1 dia
     const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
     return localDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
   };
 
-  export function formatPrazoDate(dateString?: string | Date | null): string {
+  export function formatDateToDisplay(dateString?: string | Date | null): string {
     if (!dateString) return "—";
   
-    const date =
-      typeof dateString === "string" ? new Date(dateString) : dateString;
+    const rawDate = typeof dateString === "string" ? new Date(dateString) : dateString;
+    if (!(rawDate instanceof Date) || isNaN(rawDate.getTime())) return "—";
   
-    if (!(date instanceof Date) || isNaN(date.getTime())) return "—";
+    const correctedDate =
+    rawDate.getUTCHours() === 0
+      ? new Date(rawDate.getTime() + rawDate.getTimezoneOffset() * 60000)
+      : rawDate;
   
-    // Corrige o timezone para o horário local
-    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  
-    return format(localDate, "dd/MM/yyyy");
+    return format(correctedDate, "dd/MM/yyyy");
   }
 
-  export function isDateAtrasada(dateString?: string, andamento?: string): boolean {
-    if (!dateString || andamento === "concluído") return false;
+  export function isDateAtrasada(date?: string | Date | null, andamento?: string): boolean {
+    if (!date || andamento === "concluído") return false;
+
+    const prazoDate = typeof date === "string" ? new Date(date) : date;
+    if (!(prazoDate instanceof Date) || isNaN(prazoDate.getTime())) return false;
   
-    const prazoDate = new Date(dateString);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Zera hora para evitar erro de fuso
+    today.setHours(0, 0, 0, 0);
   
-    return !isNaN(prazoDate.getTime()) && prazoDate < today;
+    const dataPrazo = new Date(prazoDate);
+    dataPrazo.setHours(0, 0, 0, 0); 
+  
+    return dataPrazo < today;
   }

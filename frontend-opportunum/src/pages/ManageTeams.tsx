@@ -141,9 +141,10 @@ export default function ManageTeams() {
                     display: "flex",
                     justifyContent: "space-between",
                     gap: "1rem",
+                    flexDirection: {xs:'column',sm:'row'}
                   }}
                 >
-                  <Box>
+                  <Box sx={{maxWidth:'100%'}}>
                     <Box sx={{ display: "flex", gap: "1rem" }}>
                       <Typography>Nome: </Typography>
                       <Typography>
@@ -225,13 +226,15 @@ export default function ManageTeams() {
                                 e.target.value as string[]
                               )
                             }
-                            sx={{ minWidth: 160 }}
+                            sx={{ minWidth: 160, maxWidth: "100%", whiteSpace: "normal"}}
                             renderValue={(selected) => (
                               <Box
                                 sx={{
                                   display: "flex",
                                   flexDirection: "column",
                                   gap: 0.5,
+                                  whiteSpace: "normal",
+                                  wordWrap: "break-word",
                                 }}
                               >
                                 {(selected as string[]).map((value) => {
@@ -239,7 +242,7 @@ export default function ManageTeams() {
                                     (p) => p._id === value
                                   );
                                   return (
-                                    <Typography key={value} variant="body2">
+                                    <Typography key={value} variant="body2" sx={{whiteSpace: "normal", wordWrap: "break-word",}}>
                                       {projeto?.title || value}
                                     </Typography>
                                   );

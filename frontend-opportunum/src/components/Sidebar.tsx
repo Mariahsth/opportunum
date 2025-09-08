@@ -17,7 +17,7 @@ import {
   DialogActions,
   Button,
   Collapse,
-  MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import React, { useState } from "react";
@@ -47,7 +47,10 @@ export default function Sidebar({
     title: "",
     municipio: "",
   });
-
+  const [municipiosList, setMunicipiosList] = useState<string[]>(
+    municipios.slice()
+  );
+  const [inputMun, setInputMun] = useState<string>("");
   if (loading) {
     return null;
   }
@@ -73,11 +76,21 @@ export default function Sidebar({
       const slug = createdProject.title.toLowerCase().replace(/\s+/g, "-");
       setOpen(false);
       setNewProject({ title: "", municipio: "" });
+      setInputMun("");
       navigate(`/planilha/${slug}`);
     } catch (err) {
       console.error(err);
       alert("Erro ao criar projeto");
     }
+  };
+
+  const handleMunicipioChange = (value: string | null) => {
+    const mun = value ?? "";
+    if (mun && !municipiosList.includes(mun)) {
+      setMunicipiosList((prev) => [...prev, mun]);
+    }
+    setNewProject((prev) => ({ ...prev, municipio: mun }));
+    setInputMun(mun);
   };
 
   const drawerContent = (
@@ -194,31 +207,35 @@ export default function Sidebar({
                     }
                   />
 
-                  <TextField
-                    select
-                    fullWidth
-                    label="Município"
-                    variant="outlined"
+
+                  <Autocomplete
+                    freeSolo
+                    options={municipiosList}
                     value={newProject.municipio}
-                    onChange={(e) =>
-                      setNewProject({
-                        ...newProject,
-                        municipio: e.target.value,
-                      })
-                    }
-                  >
-                    {municipios.map((cidade) => (
-                      <MenuItem key={cidade} value={cidade}>
-                        {cidade}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    inputValue={inputMun}
+                    onInputChange={(_, newInput) => {
+                      setInputMun(newInput);
+                      setNewProject((prev) => ({ ...prev, municipio: newInput }));
+                    }}
+                    onChange={(_, newValue) => {
+                      handleMunicipioChange(newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Município"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={() => setOpen(false)}>Cancelar</Button>
+                  <Button onClick={() => {setOpen(false); setInputMun("")}}>Cancelar</Button>
                   <Button onClick={() => handleCreateProject()}>Salvar</Button>
                 </DialogActions>
               </Dialog>
+
             </ListItem>
           </>
         )}

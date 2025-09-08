@@ -1,4 +1,4 @@
-import { TextField, Grid, Button, Box, MenuItem } from "@mui/material";
+import { TextField, Grid, Button, Box, Autocomplete } from "@mui/material";
 import { EditIcon, SaveIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { IProject } from "../interface/Project";
@@ -27,7 +27,8 @@ export default function Form({ project }: FormProps) {
   const [loading, setLoading] = useState(false);
   const [salvo, setSalvo] = useState(true);
   const { refreshProjects, user } = useAuth();
-
+  const [inputMun, setInputMun] = useState<string>("");
+  const [municipiosMock, setMunicipiosMock] = useState<string[]>(municipios);
   const [formData, setFormData] = useState({
     perspectiva: "",
     numeroEstrategia: "",
@@ -44,6 +45,11 @@ export default function Form({ project }: FormProps) {
   const isAdmin = user?.roles.includes("admin");
 
   useEffect(() => {
+    const mun = project.municipio || "";
+    if (mun && !municipiosMock.includes(mun)) {
+      setMunicipiosMock((prev) => [...prev, mun]);
+    }
+
     setFormData({
       perspectiva: project.perspectiva || "",
       numeroEstrategia: project.numeroEstrategia || "",
@@ -53,11 +59,11 @@ export default function Form({ project }: FormProps) {
       estrategia: project.estrategia || "",
       prazo: formatDateForInput(project.prazo) || "",
       responsavel: project.responsavel || "",
-      municipio: project.municipio || "",
+      municipio: mun,
     });
-
+    setInputMun(mun);
     setSalvo(true);
-  }, [project]);
+  }, [project, municipiosMock]);
 
   const handleChange = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -93,27 +99,44 @@ export default function Form({ project }: FormProps) {
             key={key}
             size={{ xs: 12, sm: index === 4 || index === 5 || index ===6 ? 12 : 6 }}
           >
-            <TextField
-              fullWidth
-              select={label === "Município"}
-              label={label}
-              disabled={salvo}
-              variant="outlined"
-              type={label === "Prazo" ? "date" : "text"}
-              multiline={label !== "Prazo"}
-              value={formData[key as keyof typeof formData]}
-              onChange={(e) => handleChange(key, e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            >
-              {label === "Município" &&
-                municipios.map((mun) => (
-                  <MenuItem key={mun} value={mun}>
-                    {mun}
-                  </MenuItem>
-                ))}
-            </TextField>
+            {label === "Município" ? (
+              <Autocomplete
+                freeSolo
+                disabled={salvo}
+                options={municipios}
+                value={formData.municipio}
+                inputValue={inputMun}
+                onInputChange={(_, newInput) => {
+                  setInputMun(newInput);
+                  handleChange("municipio", newInput);
+                }}
+                onChange={(_, newValue) => {
+                  const mun = newValue || "";
+                  if (mun && !municipios.includes(mun)) {
+                    setMunicipiosMock((prev) => [...prev, mun]);
+                  }
+                  handleChange("municipio", mun);
+                  setInputMun(mun);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label={label} variant="outlined" />
+                )}
+              />
+            ) : (
+              <TextField
+                fullWidth
+                label={label}
+                disabled={salvo}
+                variant="outlined"
+                type={label === "Prazo" ? "date" : "text"}
+                multiline={label !== "Prazo"}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            )}
           </Grid>
         ))}
 

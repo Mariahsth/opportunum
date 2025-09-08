@@ -165,8 +165,8 @@ export default function ManageTeams() {
                 >
                   <Box sx={{ maxWidth: "100%" }}>
                     <Box sx={{ display: "flex", gap: "1rem" }}>
-                      <Typography>Nome: </Typography>
-                      <Typography>
+                      <Typography >Nome: </Typography>
+                      <Typography sx={{fontWeight:'bold'}}>
                         {membro.name} {membro._id === user?._id && "(você)"}
                       </Typography>
                     </Box>

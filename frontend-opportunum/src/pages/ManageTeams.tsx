@@ -36,6 +36,14 @@ export default function ManageTeams() {
   >({});
   const isMaster = user?.roles?.includes("master");
 
+  const projetosDisponiveis = isMaster
+    ? projects
+    : projects.filter((proj) =>
+        user?.projects?.some(
+          (p) => (typeof p === "string" ? p : p._id) === proj._id
+        )
+      );
+
   const handleSave = async (id: string) => {
     setModoEdicao((prev) => ({ ...prev, [id]: false }));
     const dadosAtualizados = valoresEditados[id];
@@ -116,11 +124,15 @@ export default function ManageTeams() {
 
       <Card>
         <CardContent>
-          <Typography sx={{fontSize:'2rem', mb:2}}>Olá, {user?.name}</Typography>
-          <Box sx={{display:'flex', gap:'0.5rem'}}>
-            <Typography>Seu perfil é:  </Typography>
-            <Typography sx={{color:'primary.main'}}> {user?.roles}</Typography>
-
+          <Typography sx={{ fontSize: "2rem", mb: 2 }}>
+            Olá, {user?.name}
+          </Typography>
+          <Box sx={{ display: "flex", gap: "0.5rem" }}>
+            <Typography>Seu perfil é: </Typography>
+            <Typography sx={{ color: "primary.main" }}>
+              {" "}
+              {user?.roles}
+            </Typography>
           </Box>
           <Typography>
             Você tem {equipe.filter((m) => m._id !== user?._id).length} membros
@@ -141,10 +153,10 @@ export default function ManageTeams() {
                     display: "flex",
                     justifyContent: "space-between",
                     gap: "1rem",
-                    flexDirection: {xs:'column',sm:'row'}
+                    flexDirection: { xs: "column", sm: "row" },
                   }}
                 >
-                  <Box sx={{maxWidth:'100%'}}>
+                  <Box sx={{ maxWidth: "100%" }}>
                     <Box sx={{ display: "flex", gap: "1rem" }}>
                       <Typography>Nome: </Typography>
                       <Typography>
@@ -226,7 +238,11 @@ export default function ManageTeams() {
                                 e.target.value as string[]
                               )
                             }
-                            sx={{ minWidth: 160, maxWidth: "100%", whiteSpace: "normal"}}
+                            sx={{
+                              minWidth: 160,
+                              maxWidth: "100%",
+                              whiteSpace: "normal",
+                            }}
                             renderValue={(selected) => (
                               <Box
                                 sx={{
@@ -237,20 +253,29 @@ export default function ManageTeams() {
                                   wordWrap: "break-word",
                                 }}
                               >
-                                {(selected as string[]).map((value) => {
-                                  const projeto = projects.find(
-                                    (p) => p._id === value
-                                  );
-                                  return (
-                                    <Typography key={value} variant="body2" sx={{whiteSpace: "normal", wordWrap: "break-word",}}>
-                                      {projeto?.title || value}
+                                {(selected as string[])
+                                  .map((value) =>
+                                    projetosDisponiveis.find(
+                                      (p) => p._id === value
+                                    )
+                                  )
+                                  .filter(Boolean) 
+                                  .map((projeto) => (
+                                    <Typography
+                                      key={projeto!._id}
+                                      variant="body2"
+                                      sx={{
+                                        whiteSpace: "normal",
+                                        wordWrap: "break-word",
+                                      }}
+                                    >
+                                      {projeto!.title}
                                     </Typography>
-                                  );
-                                })}
+                                  ))}
                               </Box>
                             )}
                           >
-                            {projects.map((project) => (
+                            {projetosDisponiveis.map((project) => (
                               <MenuItem key={project._id} value={project._id}>
                                 {project.title}
                               </MenuItem>

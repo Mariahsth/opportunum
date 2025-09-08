@@ -13,11 +13,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import { formatDateForDisplay } from "../../utils/formatDate";
+import { formatDateForDisplay, isDateAtrasada } from "../../utils/formatDate";
 import type { TableRowItemProps } from "./types";
 import { useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import type { IProject } from "../../interface/Project";
+import { capitalizeFirst } from "../../utils/capitalizeFirstLetter";
 
 export default function TableRowItem({
   row,
@@ -189,9 +190,9 @@ export default function TableRowItem({
                 </FormControl>
               ) : (
                 <TextField
-                sx={{
-                  ...(col === "kr" && { minWidth: 120  })
-                }}
+                  sx={{
+                    ...(col === "kr" && { minWidth: 120 }),
+                  }}
                   fullWidth={col === "resultado"}
                   size="small"
                   multiline={col === "resultado"}
@@ -203,10 +204,34 @@ export default function TableRowItem({
                 />
               )
             ) : col === "prazo" ? (
-              formatDateForDisplay(String(value ?? ""))
+              <Box
+              component="span"
+              sx={{
+                color: isDateAtrasada(String(value), row.andamento)
+                  ? "#f44336"
+                  : "inherit",
+              }}
+            >
+              {formatDateForDisplay(String(value ?? ""))}
+            </Box>
             ) : col === "andamento" ? (
               value ? (
-                value
+                <Box
+                  component="span"
+                  sx={{
+                    color:
+                      value === "pendente"
+                        ? "#f44336"
+                        : value === "em andamento"
+                        ? "#ff9800"
+                        : value === "concluído"
+                        ? "#4caf50"
+                        : "text.primary",
+                    fontWeight: 500,
+                  }}
+                >
+                  {capitalizeFirst(value)}
+                </Box>
               ) : (
                 <Box
                   component="span"

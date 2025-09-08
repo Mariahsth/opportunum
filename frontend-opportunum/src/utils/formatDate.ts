@@ -33,3 +33,13 @@ export const formatDateForDisplay = (dateString: string) => {
   
     return format(localDate, "dd/MM/yyyy");
   }
+
+  export function isDateAtrasada(dateString?: string, andamento?: string): boolean {
+    if (!dateString || andamento === "concluído") return false;
+  
+    const prazoDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Zera hora para evitar erro de fuso
+  
+    return !isNaN(prazoDate.getTime()) && prazoDate < today;
+  }

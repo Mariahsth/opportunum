@@ -20,6 +20,8 @@ const STATUS_COLORS: Record<string, string> = {
 export default function DashboardDeadline({ atividades }: DashboardDeadlineProps) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMedium = useMediaQuery(theme.breakpoints.down("md"));
+  const isLarge = useMediaQuery(theme.breakpoints.down("lg"));
 
   const pendentes = atividades.filter(
     (a) => a.status === "em andamento" || a.status === "pendente"
@@ -58,18 +60,18 @@ export default function DashboardDeadline({ atividades }: DashboardDeadlineProps
       <Typography variant="h6" align="center" sx={{ mb: 2 }}>
         Prazo das Atividades Pendentes
       </Typography>
-      <ResponsiveContainer width="100%" height={isSmall ? 250 : 400}>
+      <ResponsiveContainer width="100%" height='100%'>
         <PieChart margin={{ bottom: 50}} >
           <Pie
             data={chartData}
             cx="50%"
             cy="50%"
-            outerRadius={isSmall ? 50 : 100}
-            innerRadius={isSmall ? 30 : 70}
+            outerRadius={isMedium ? 70 : 100}
+            innerRadius={isMedium ? 50 : 70}
 
             dataKey="value"
             label={
-              isSmall
+              isLarge
                 ? ({ percent }) =>
                   percent !== undefined ?
                   `${(percent * 100).toFixed(0)}%`
@@ -80,7 +82,7 @@ export default function DashboardDeadline({ atividades }: DashboardDeadlineProps
                       ? `${name} (${(percent * 100).toFixed(0)}%)`
                       : name
             }
-            fontSize={isSmall ? '12px' : '14px'}
+            fontSize='12px'
           >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />

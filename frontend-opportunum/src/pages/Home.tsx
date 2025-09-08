@@ -184,7 +184,7 @@ export default function Home() {
           const slug = projeto.title.toLowerCase().replace(/\s+/g, "-");
 
           return (
-            <Grid size={{ xs: 12, sm: 6 }} key={projeto._id}>
+            <Grid size={{ xs: 12, md: 6 }} key={projeto._id}>
               <Card sx={{height:'100%'}}>
                 <CardContent
                   component={Link}

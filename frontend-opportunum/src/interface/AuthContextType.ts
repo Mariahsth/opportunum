@@ -6,6 +6,7 @@ export interface AuthContextType {
   loading: boolean;
   refreshUser: () => void;
   logout: () => Promise<void>;
+  login: (email:string, password:string) => Promise<void>;
   availableRoles: string[];
   users: User[];
   fetchAllUsers: () => void;

@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import projectRoutes from './routes/projectsRoutes';
-import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes";
 import taskRoutes from './routes/taskRoutes';
 
@@ -18,10 +17,8 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: allowedOrigins,
-  credentials: true,
 }));
 app.use(express.json());
-app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use("/api", userRoutes);

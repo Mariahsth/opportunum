@@ -4,7 +4,9 @@ import axios from "axios";
 export const loginUser = async (email: string, password: string) => {
   try {
     const res = await api.post("/auth/login", { email, password });
-    return res.data;
+    const { token, user } = res.data;
+    localStorage.setItem("token", token);
+    return { user, token };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw error.response?.data?.message || "Erro ao fazer login";
@@ -39,12 +41,9 @@ export const fetchMe = async () => {
 
 export const logoutUser = async () => {
   try {
-    const res = await api.post("/auth/logout");
-    return res.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw error.response?.data?.message || "Erro ao fazer logout";
-    }
-    throw "Erro desconhecido ao fazer logout";
+    localStorage.removeItem("token");
+    return { message: "Logout realizado com sucesso" };
+  } catch {
+    throw "Erro ao fazer logout";
   }
 };

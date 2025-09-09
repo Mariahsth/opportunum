@@ -3,7 +3,7 @@ import { AuthContext } from "./AuthContext";
 import type { User } from "../interface/User";
 import type { AuthProviderProps } from "../interface/AuthProviderProps";
 import { fetchAllUsers, fetchAvailableRoles } from "../services/userService";
-import { fetchMe, logoutUser } from "../services/authService";
+import { fetchMe, logoutUser, loginUser  } from "../services/authService";
 import type { IProject } from "../interface/Project";
 import { fetchProjects } from "../services/projectsService";
 
@@ -56,6 +56,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const login = async (email: string, password: string) => {
+    const { user } = await loginUser(email, password);
+    setUser(user);
+  };
+
   const logout = async () => {
     try {
       await logoutUser();
@@ -82,6 +87,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         loading,
         refreshUser,
         logout,
+        login,
         fetchAllUsers: loadUsers, 
         setUsers, 
         projects,

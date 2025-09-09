@@ -8,14 +8,15 @@ import {
   Link,
 } from "@mui/material";
 import { useState } from "react";
-import { loginUser } from "../services/authService";
 import { Link as RouterLink } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +24,7 @@ export default function Login() {
 
     try {
       setLoading(true);
-      await loginUser(email, senha);
+      await login(email, senha);
       setLoading(false);
       alert("Login realizado com sucesso!");
       window.location.href = "/";

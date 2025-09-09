@@ -1,11 +1,17 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "../models/User";
 import { isStrongPassword, isValidEmail, isValidName } from "../utils/validators";
 
-const JWT_SECRET = process.env.JWT_SECRET || "senhasecreta";
+const JWT_SECRET: string = process.env.JWT_SECRET || "senhasecreta";
 
+type MyJwtPayload = JwtPayload & {
+  id: string;
+  email: string;
+  roles: string[];
+  projects: string[];
+};
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, roles, projects } = req.body;
@@ -71,15 +77,10 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: "1d" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", 
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax" ,
-      maxAge: 24 * 60 * 60 * 1000, 
-    });
 
     res.status(200).json({
       message: "Login realizado com sucesso",
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -96,13 +97,18 @@ export const login = async (req: Request, res: Response) => {
 
 export const getMe = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.token;
-
-    if (!token) {
+    const authHeader = req.headers.authorization ?? "";
+    const [scheme, token] = authHeader.split(" ");
+    if (scheme !== "Bearer" || !token) {
       return res.status(401).json({ message: "Não autenticado" });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as MyJwtPayload;
+    
+    if (!decoded || typeof decoded !== "object" || !decoded.id) {
+      return res.status(401).json({ message: "Token inválido" });
+    }
+
     const user = await User.findById(decoded.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado" });
@@ -116,11 +122,6 @@ export const getMe = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
     return res.status(200).json({ message: "Deslogado com sucesso" });
   } catch (error) {
     return res.status(500).json({ message: "Erro ao deslogar" });

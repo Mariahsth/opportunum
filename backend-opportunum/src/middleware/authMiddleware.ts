@@ -9,15 +9,11 @@ interface JwtPayload {
   projects: string[];
 }
 const JWT_SECRET = process.env.JWT_SECRET || "senhasecreta";
+
 export const protect = async (req: any, res: Response, next: NextFunction) => {
   let token;
 
-  if (req.cookies?.token) {
-    token = req.cookies.token;
-  } else if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
   }
 

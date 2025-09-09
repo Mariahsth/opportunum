@@ -78,8 +78,9 @@ export default function Home() {
 
   if (loading || loadingTasks) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems:'center', gap:2, mt: 4, height:'50vh' }}>
+        <CircularProgress size={30}/>
+        <Typography>Carregando...</Typography>
       </Box>
     );
   }

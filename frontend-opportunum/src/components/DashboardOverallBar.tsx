@@ -41,8 +41,8 @@ export default function DashboardOverallBar({
         layout="horizontal"
         margin={{
           top: 20,
-          right: isSmall ? 10 : 30,
-          left: isSmall ? 5 : 50,
+          right: isSmall ? 10 : 10,
+          left: isSmall ? 5 : 5,
           bottom: 20,
         }}
       >

@@ -144,38 +144,53 @@ export default function Home() {
         </CardContent>
       </Card>
 
-      {allTasks.length > 0 && (
-        <Card sx={{ mt: 3 }}>
-          <CardContent
-            sx={{
-              p: {
-                xs: 0,
-                sm: 0,
-                md: 0,
-                lg: 10,
-              },
-            }}
-          >
-            <Typography variant="h6" align="center" sx={{ mb: 2 }}>
-              {" "}
-              Resumo Geral das Suas Atividades{" "}
-            </Typography>{" "}
-            <DashboardOverallBar andamentoGeral={andamentoUser} />
-            
-          </CardContent>
-        </Card>
-      )}
-      {projects.length > 0 && (
-        <Card sx={{my:5}}>
-          <CardContent>
-            <Typography variant="h6" align="center" sx={{ mb: 2 }}>
-            Resumo Geral dos Seus Projetos
-          </Typography>
-          <DashboardOverallBar andamentoGeral={andamentoGeral} />
+      <Grid container spacing={2} sx={{ mb: 3 }}>
 
-          </CardContent>
-        </Card>
-      )}
+          {allTasks.length > 0 && (
+          <Grid size={{ xs: 12, md: 6 }} sx={{mb:2}} >
+            <Card sx={{ mt: 3, height:'100%' }}>
+              <CardContent
+                sx={{
+                  p: {
+                    xs: 0,
+                    sm: 0,
+                    md: 0,
+                    lg: 5,
+                  },
+                }}
+              >
+                <Typography variant="h6" align="center" sx={{ mb: 2 }}>
+                  {" "}
+                  Resumo Geral das Suas Atividades{" "}
+                </Typography>{" "}
+                <DashboardOverallBar andamentoGeral={andamentoUser} />
+                
+              </CardContent>
+            </Card>
+          </Grid>
+          )}
+          {projects.length > 0 && (
+            <Grid size={{ xs: 12, md: 6 }} sx={{mb:2}}>
+              <Card sx={{mt:3, height:'100%'}}>
+                <CardContent sx={{
+                    p: {
+                      xs: 0,
+                      sm: 0,
+                      md: 0,
+                      lg: 5,
+                    },
+                  }}>
+                  <Typography variant="h6" align="center" sx={{ mb: 2 }}>
+                  Resumo Geral dos Seus Projetos
+                </Typography>
+                <DashboardOverallBar andamentoGeral={andamentoGeral} />
+
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
+
+      </Grid>
 
       <Grid container spacing={2} sx={{ mt: 3 }}>
         {projects.map((projeto) => {

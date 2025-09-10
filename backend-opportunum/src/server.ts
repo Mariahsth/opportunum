@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes';
 import projectRoutes from './routes/projectsRoutes';
 import userRoutes from "./routes/userRoutes";
 import taskRoutes from './routes/taskRoutes';
+import connectDB from './config/db';
 
 const app = express();
 
@@ -27,9 +28,10 @@ app.use('/api/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI!)
-  .then(() => {
-    console.log('MongoDB conectado');
-    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-  })
-  .catch(err => console.error(err));
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+  });
+}).catch((err) => {
+  console.error('Erro ao iniciar o servidor:', err);
+});

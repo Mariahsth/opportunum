@@ -73,11 +73,10 @@ export default function Sidebar({
     try {
       const createdProject = await createProject(newProject);
       await refreshProjects?.();
-      const slug = createdProject.title.toLowerCase().replace(/\s+/g, "-");
       setOpen(false);
       setNewProject({ title: "", municipio: "" });
       setInputMun("");
-      navigate(`/planilha/${slug}`);
+      navigate(`/planilha/${createdProject._id}`);
     } catch (err) {
       console.error(err);
       alert("Erro ao criar projeto");
@@ -143,13 +142,12 @@ export default function Sidebar({
             >
               <List component="div" disablePadding>
                 {projList.map((page) => {
-                  const slug = page.title.toLowerCase().replace(/\s+/g, "-");
                   return (
                     <ListItem key={page._id} disablePadding sx={{ pl: 1 }}>
                       <ListItemButton
                         component={Link}
-                        to={`planilha/${slug}`}
-                        selected={location.pathname === `planilha/${slug}`}
+                        to={`planilha/${page._id}`}
+                        selected={location.pathname === `planilha/${page._id}`}
                         sx={{ py: 0, pr: 0 }}
                       >
                         <ListItemText

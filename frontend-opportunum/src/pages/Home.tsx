@@ -115,11 +115,10 @@ export default function Home() {
               )}
 
               {projects.map((project) => {
-                const slug = project.title.toLowerCase().replace(/\s+/g, "-");
                 return (
                   <ListItem
                     component={Link}
-                    to={`planilha/${slug}`}
+                    to={`planilha/${project._id}`}
                     key={project._id}
                     sx={{
                       color: "var(--color-drawer-bg-desktop)",
@@ -182,14 +181,13 @@ export default function Home() {
         {projects.map((projeto) => {
           const projectTasks = tasksByProject[projeto._id] || [];
           const andamentoData = projectTasks.map((task) => task.status);
-          const slug = projeto.title.toLowerCase().replace(/\s+/g, "-");
 
           return (
             <Grid size={{ xs: 12, md: 6 }} key={projeto._id}>
               <Card sx={{height:'100%'}}>
                 <CardContent
                   component={Link}
-                  to={`planilha/${slug}`}
+                  to={`planilha/${projeto._id}`}
                   sx={{
                     display: "flex",
                     flexDirection: "column",

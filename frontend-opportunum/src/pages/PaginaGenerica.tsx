@@ -15,7 +15,7 @@ import { useAuth } from "../hooks/useAuth";
 import { deleteProject } from "../services/projectsService";
 
 export default function PaginaGenerica() {
-  const { nome } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading, projects, refreshProjects } = useAuth();
   const isMaster = user?.roles.includes("master");
@@ -25,7 +25,7 @@ export default function PaginaGenerica() {
   }
 
   const project = projects.find(
-    (p) => p.title.toLowerCase().replace(/\s+/g, "-") === nome
+    (p) => p._id === id
   );
 
   const handleDelete = async () => {
@@ -59,7 +59,7 @@ export default function PaginaGenerica() {
       >
         <Typography variant="h2" sx={{ textAlign: "center", mb: 2 }}>
           
-          {nome?.replace(/-/g, " ").toLocaleUpperCase()}
+          {project?.title}
         </Typography>
         {isMaster && (
           <Button

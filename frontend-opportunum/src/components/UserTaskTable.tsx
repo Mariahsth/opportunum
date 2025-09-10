@@ -68,7 +68,6 @@ export default function UserTasksTable({
   
               if (!project) return null;
   
-              const slug = project.title.toLowerCase().replace(/\s+/g, "-");
   
               const isAtrasado = isDateAtrasada(task.prazo, task.status);
   
@@ -76,7 +75,7 @@ export default function UserTasksTable({
                 <TableRow
                   key={task._id}
                   component={Link}
-                  to={`planilha/${slug}`}
+                  to={`planilha/${project._id}`}
                   sx={{
                     textDecoration: "none",
                     color: "inherit",

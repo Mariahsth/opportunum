@@ -79,7 +79,7 @@ function AppContent() {
             }
           />
           <Route
-            path="/planilha/:nome"
+            path="/planilha/:id"
             element={
               <PrivateRoute>
                 <PaginaGenerica />

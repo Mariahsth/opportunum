@@ -8,15 +8,6 @@ Permite cadastrar projetos, gerenciar tarefas e visualizar **painéis de progres
 ![preview site - planilha](project.PNG)
 
 ---
-## 🔗 Acesso Rápido
-
-🔹 **Link de acesso:** [https://opportunum.vercel.app/](https://opportunum.vercel.app/)  
-🔹 **Login para teste:**  
-```bash
-Email: admin@opportunum.com
-Senha: Senha@123
-```
-
 
 ## 🚀 Funcionalidades
 

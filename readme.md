@@ -1,12 +1,12 @@
 # 📊 OKRs de Planejamento Estratégico - Opportunum
 
-![preview site - indicadores](./frontend-opportunum/public/opportunum.PNG)
-![preview site - planilha](project.PNG)
+![preview site - home](home-1.PNG)
 Um sistema web full-stack para **gestão de projetos e acompanhamento de OKRs (Objectives and Key Results)**.  
 Permite cadastrar projetos, gerenciar tarefas e visualizar **painéis de progresso** com gráficos dinâmicos, ajudando equipes a acompanharem metas de forma simples e intuitiva.
-![Dashboards individuais](home2.PNG)
 
-![Dashboards de projetos](home3.PNG)
+![preview site - indicadores](./frontend-opportunum/public/opportunum.PNG)
+![preview site - planilha](project.PNG)
+
 ---
 ## 🔗 Acesso Rápido
 
